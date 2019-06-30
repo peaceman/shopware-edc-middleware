@@ -20,7 +20,7 @@ class CreateResourceFileInstancesTable extends Migration
             $table->string('disk', 32);
 
             $table->timestamps();
-            $table->timestamp('last_access_at');
+            $table->timestamp('last_access_at')->nullable();
 
             $table->unique(['file_id', 'disk'], 'rfi_fi_di_uq');
             $table->foreign('file_id', 'rfi_rf_fk')
