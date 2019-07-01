@@ -7,6 +7,7 @@ namespace App;
 
 use App\ResourceFile\ResourceFile;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -24,11 +25,28 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class EDCFeed extends Model
 {
+    public const TYPE_DISCOUNTS = 'discounts';
+    public const TYPE_PRODUCTS = 'products';
+
     protected $table = 'edc_feeds';
     protected static $unguarded = true;
 
     public function file(): BelongsTo
     {
-        $this->belongsTo(ResourceFile::class, 'resource_file_id', 'id');
+        return $this->belongsTo(ResourceFile::class, 'resource_file_id', 'id');
+    }
+
+    public function scopeWithType(Builder $query, string $feedType): Builder
+    {
+        return $query->where('type', $feedType);
+    }
+
+    public function asLoggingContext(): array
+    {
+        return $this->only([
+            'id',
+            'type',
+            'created_at',
+        ]);
     }
 }

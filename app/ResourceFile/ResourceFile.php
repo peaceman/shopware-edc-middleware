@@ -78,4 +78,11 @@ class ResourceFile extends Model
             throw new \LogicException('Invalid UUID');
         }
     }
+
+    public function asLoggingContext(): array
+    {
+        return $this->only([
+            'id', 'original_filename', 'mime_type', 'size',
+        ]);
+    }
 }

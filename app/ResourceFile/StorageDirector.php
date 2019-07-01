@@ -8,10 +8,14 @@ namespace App\ResourceFile;
 use App\ResourceFile\Jobs\UpdateLastAccessTime;
 use App\ResourceFile\Jobs\UploadToCloud;
 use Assert\Assert;
+use function GuzzleHttp\Psr7\copy_to_stream;
+use function GuzzleHttp\Psr7\stream_for;
+use function GuzzleHttp\Psr7\try_fopen;
 use Illuminate\Contracts\Bus\Dispatcher as JobDispatcher;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use League\Flysystem\Adapter\Local;
+use Psr\Http\Message\StreamInterface;
 use SplFileInfo;
 use Symfony\Component\HttpFoundation\File\File;
 
@@ -65,6 +69,18 @@ class StorageDirector
     {
         $rf = $this->newFileWithName($filename);
         file_put_contents($this->genLocalPath($rf), $content);
+        $this->persistFile($rf);
+
+        return $rf;
+    }
+
+    public function createFileFromStream(string $filename, StreamInterface $inputStream): ResourceFile
+    {
+        $rf = $this->newFileWithName($filename);
+        $outputSteam = stream_for(try_fopen($this->genLocalPath($rf), 'w'));
+        copy_to_stream($inputStream, $outputSteam);
+        $outputSteam->close();
+
         $this->persistFile($rf);
 
         return $rf;
