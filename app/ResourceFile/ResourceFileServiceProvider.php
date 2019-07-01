@@ -11,6 +11,7 @@ use App\ResourceFile\Jobs\DeleteUnusedLocals;
 use App\ResourceFile\Jobs\ForceDeleteSoftDeleted;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Bus\Dispatcher;
+use \Illuminate\Foundation\Console\Kernel;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Foundation\Console\ClosureCommand;
 use Illuminate\Support\ServiceProvider;
@@ -61,14 +62,20 @@ class ResourceFileServiceProvider extends ServiceProvider
 
     protected function registerCommands()
     {
-        $this->commands([
-            new ClosureCommand('rf:house-keeping:delete-unused-locals', function (Dispatcher $dispatcher) {
+        /** @var Kernel $consoleKernel */
+        $consoleKernel = $this->app[Kernel::class];
+
+        $consoleKernel
+            ->command('rf:house-keeping:delete-unused-locals', function (Dispatcher $dispatcher) {
                 $dispatcher->dispatch(new DeleteUnusedLocals());
-            }),
-            new ClosureCommand('rf:house-keeping:force-delete-soft-deleted', function (Dispatcher $dispatcher) {
+            })
+            ->describe('Delete unused local resource file instances');
+
+        $consoleKernel
+            ->command('rf:house-keeping:force-delete-soft-deleted', function (Dispatcher $dispatcher) {
                 $dispatcher->dispatch(new ForceDeleteSoftDeleted());
-            }),
-        ]);
+            })
+            ->describe('Remove files and database records of soft deleted resource files');
     }
 
     protected function scheduleJobs()
