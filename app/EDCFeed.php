@@ -30,6 +30,7 @@ class EDCFeed extends Model
 
     public const TYPE_DISCOUNTS = 'discounts';
     public const TYPE_PRODUCTS = 'products';
+    public const TYPE_PRODUCT_STOCKS = 'product-stocks';
 
     protected $table = 'edc_feeds';
     protected static $unguarded = true;
