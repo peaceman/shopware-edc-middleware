@@ -10,6 +10,7 @@ use App\ResourceFile\ResourceFile;
 use App\ResourceFile\StorageDirector;
 use App\Utils\GuessDownloadFilenames;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
 use function GuzzleHttp\Psr7\stream_for;
 use Psr\Http\Message\StreamInterface;
@@ -40,30 +41,39 @@ class FeedFetcher
 
     public function fetch(string $feedURI, string $feedType): ?EDCFeed
     {
-        $this->logger->info('FeedFetcher: Start fetching feed', compact('feedType', 'feedURI'));
+        try {
+            $this->logger->info('FeedFetcher: Start fetching feed', compact('feedType', 'feedURI'));
 
-        $response = $this->httpClient->get($feedURI);
-        $filename = (new GuessDownloadFilenames($feedURI, $response))();
+            $response = $this->httpClient->get($feedURI);
+            $filename = (new GuessDownloadFilenames($feedURI, $response))();
 
-        $rf = $this->isZipArchive($filename)
-            ? $this->unzipArchive($response->getBody())
-            : $this->storeAsResourceFile($filename, $response->getBody());
+            $rf = $this->isZipArchive($filename)
+                ? $this->unzipArchive($response->getBody())
+                : $this->storeAsResourceFile($filename, $response->getBody());
 
-        if ($this->wouldBeADuplicateFeed($rf, $feedType)) {
-            $rf->delete();
-            return null;
+            if ($this->wouldBeADuplicateFeed($rf, $feedType)) {
+                $rf->delete();
+                return null;
+            }
+
+            $feed = new EDCFeed(['type' => $feedType]);
+            $feed->file()->associate($rf);
+            $feed->save();
+
+            $this->logger->info('FeedFetcher: Finished fetching feed', array_merge(
+                compact('feedType', 'feedURI'),
+                ['feed' => $feed->asLoggingContext()]
+            ));
+
+            return $feed;
+        } catch (RequestException $e) {
+            $this->logger->error('FeedFetcher: Triggered RequestException', array_merge(
+                compact('feedType', 'feedURI'),
+                ['message' => $e->getMessage()]
+            ));
+
+            throw $e;
         }
-
-        $feed = new EDCFeed(['type' => $feedType]);
-        $feed->file()->associate($rf);
-        $feed->save();
-
-        $this->logger->info('FeedFetcher: Finished fetching feed', array_merge(
-            compact('feedType', 'feedURI'),
-            ['feed' => $feed->asLoggingContext()]
-        ));
-
-        return $feed;
     }
 
     protected function isZipArchive(string $filename): bool

@@ -6,6 +6,7 @@
 namespace App;
 
 use App\ResourceFile\ResourceFile;
+use App\Utils\ConstantEnumerator;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class EDCFeed extends Model
 {
+    use ConstantEnumerator;
+
     public const TYPE_DISCOUNTS = 'discounts';
     public const TYPE_PRODUCTS = 'products';
 
