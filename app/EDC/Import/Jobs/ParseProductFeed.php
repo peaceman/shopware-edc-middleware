@@ -6,22 +6,22 @@
 namespace App\EDC\Import\Jobs;
 
 use App\EDC\Import\Exceptions\ParserFeedTypeMismatch;
-use App\EDC\Import\Parser\DiscountFeedParser;
+use App\EDC\Import\Parser\ProductFeedParser;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Psr\Log\LoggerInterface;
 
-class ParseDiscountFeed extends ParseFeed
+class ParseProductFeed extends ParseFeed
 {
     public function handle(
         LoggerInterface $logger,
-        DiscountFeedParser $parser
+        ProductFeedParser $parser
     )
     {
         try {
             $parser->parse($this->feed);
         } catch (ParserFeedTypeMismatch $e) {
-            $logger->error('ParseDiscountFeed: ParserFeedTypeMismatch; delete job', [
+            $logger->error('ParseProductsFeed: ParserFeedTypeMismatch; delete job', [
                 'msg' => $e->getMessage(),
             ]);
 

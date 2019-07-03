@@ -7,9 +7,12 @@ namespace App\EDC\Import\Jobs;
 
 use App\EDCFeed;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 
 abstract class ParseFeed implements ShouldQueue
 {
+    use InteractsWithQueue;
+
     /** @var EDCFeed */
     public $feed;
 

@@ -8,8 +8,8 @@ namespace App\EDC\Import;
 use App\EDC\Import\Events\FeedFetched;
 use App\EDC\Import\Jobs\FetchFeed;
 use App\EDC\Import\Jobs\ParseDiscountFeed;
-use App\EDC\Import\Jobs\ParseProductsFeed;
-use App\EDC\Import\Jobs\ParseProductStocksFeed;
+use App\EDC\Import\Jobs\ParseProductFeed;
+use App\EDC\Import\Jobs\ParseProductStockFeed;
 use App\EDCFeed;
 use App\ResourceFile\Jobs\DeleteUnusedLocals;
 use App\ResourceFile\Jobs\ForceDeleteSoftDeleted;
@@ -26,8 +26,8 @@ class EDCImportServiceProvider extends ServiceProvider
     ];
 
     protected $parseFeedJobMapping = [
-        EDCFeed::TYPE_PRODUCTS => ParseProductsFeed::class,
-        EDCFeed::TYPE_PRODUCT_STOCKS => ParseProductStocksFeed::class,
+        EDCFeed::TYPE_PRODUCTS => ParseProductFeed::class,
+        EDCFeed::TYPE_PRODUCT_STOCKS => ParseProductStockFeed::class,
         EDCFeed::TYPE_DISCOUNTS => ParseDiscountFeed::class,
     ];
 

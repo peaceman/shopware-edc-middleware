@@ -9,8 +9,8 @@ use App\EDC\Import\DispatchParseFeed;
 use App\EDC\Import\Events\FeedFetched;
 use App\EDC\Import\Exceptions\UnknownFeedType;
 use App\EDC\Import\Jobs\ParseDiscountFeed;
-use App\EDC\Import\Jobs\ParseProductsFeed;
-use App\EDC\Import\Jobs\ParseProductStocksFeed;
+use App\EDC\Import\Jobs\ParseProductFeed;
+use App\EDC\Import\Jobs\ParseProductStockFeed;
 use App\EDCFeed;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
@@ -27,11 +27,11 @@ class DispatchParseFeedTest extends TestCase
             ],
             EDCFeed::TYPE_PRODUCT_STOCKS => [
                 EDCFeed::TYPE_PRODUCT_STOCKS,
-                ParseProductStocksFeed::class,
+                ParseProductStockFeed::class,
             ],
             EDCFeed::TYPE_PRODUCTS => [
                 EDCFeed::TYPE_PRODUCTS,
-                ParseProductsFeed::class,
+                ParseProductFeed::class,
             ],
         ];
     }
