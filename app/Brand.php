@@ -5,7 +5,9 @@
 
 namespace App;
 
+use App\EDC\Import\Events\BrandDiscountTouched;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -54,5 +56,17 @@ class Brand extends Model
 
         $this->currentDiscount->update(['current_until' => now()]);
         $this->unsetRelation('currentDiscount');
+    }
+
+    public function scopeWithBrandID(Builder $query, string $brandID): Builder
+    {
+        return $query->where('edc_brand_id', $brandID);
+    }
+
+    public function asLoggingContext(): array
+    {
+        return $this->only([
+            'id', 'edc_brand_id', 'brand_name'
+        ]);
     }
 }

@@ -38,4 +38,9 @@ class BrandDiscount extends Model
     {
         return $this->belongsTo(EDCFeed::class, 'edc_feed_id', 'id');
     }
+
+    public function asLoggingContext(): array
+    {
+        return $this->only(['id', 'brand_id', 'edc_feed_id', 'value', 'current_until']);
+    }
 }

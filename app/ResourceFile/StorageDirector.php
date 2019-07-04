@@ -86,6 +86,16 @@ class StorageDirector
         return $rf;
     }
 
+    public function createFileFromPath(string $filename, string $filePath): ResourceFile
+    {
+        $rf = $this->newFileWithName($filename);
+        copy($filePath, $this->genLocalPath($rf));
+
+        $this->persistFile($rf);
+
+        return $rf;
+    }
+
     public function newFileWithName(string $filename): ResourceFile
     {
         $rf = ResourceFile::newWithUUID();
