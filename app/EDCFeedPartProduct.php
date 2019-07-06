@@ -37,4 +37,9 @@ class EDCFeedPartProduct extends Model
     {
         return $this->belongsTo(EDCFeed::class, 'full_feed_id', 'id');
     }
+
+    public function asLoggingContext(): array
+    {
+        return $this->only(['id', 'file_id', 'full_feed_id']);
+    }
 }

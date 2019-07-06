@@ -5,7 +5,182 @@
 
 namespace App\EDC\Import\Parser;
 
-class ProductFeedPartParser
-{
+use App\Brand;
+use App\EDC\Import\Events\ProductTouched;
+use App\EDC\Import\ProductXML;
+use App\EDC\Import\VariantXML;
+use App\EDCFeedPartProduct;
+use App\EDCProduct;
+use App\EDCProductData;
+use App\EDCProductVariant;
+use App\EDCProductVariantData;
 
+class ProductFeedPartParser extends FeedParser
+{
+    public function parse(EDCFeedPartProduct $feed): void
+    {
+        $productXML = $this->createProductXML($feed);
+
+        $this->dbConnection->transaction(function () use ($feed, $productXML) {
+            $product = $this->tryToFetchExistingProduct($productXML);
+
+            $product
+                ? $this->updateProduct($feed, $productXML, $product)
+                : $this->createProduct($feed, $productXML);
+        });
+    }
+
+    protected function createProductXML(EDCFeedPartProduct $feed): ProductXML
+    {
+        $filePath = $this->storageDirector->getLocalPath($feed->file);
+
+        return ProductXML::fromFilePath($filePath);
+    }
+
+    protected function tryToFetchExistingProduct(ProductXML $productXML): ?EDCProduct
+    {
+        $edcID = $productXML->getEDCID();
+
+        return EDCProduct::query()->where('edc_id', $edcID)->first();
+    }
+
+    protected function createProduct(EDCFeedPartProduct $feed, ProductXML $productXML): void
+    {
+        $product = new EDCProduct();
+        $product->edc_id = $productXML->getEDCID();
+        $product->brand()->associate($this->fetchOrCreateBrand($productXML));
+        $product->save();
+
+        $this->createProductData($feed, $productXML, $product);
+        $this->createOrUpdateVariants($feed, $productXML, $product);
+
+        $this->logger->info('ProductFeedParser: created product', [
+            'product' => $product->asLoggingContext(),
+        ]);
+
+        $this->dispatchTouchedEvent($product);
+    }
+
+    protected function updateProduct(EDCFeedPartProduct $feed, ProductXML $productXML, EDCProduct $product): void
+    {
+        $feedIsAlreadyKnown = $this->isFeedAlreadyKnown($feed, $product);
+
+        $this->createProductData($feed, $productXML, $product);
+        $this->createOrUpdateVariants($feed, $productXML, $product);
+
+        $this->logger->info('ProductFeedPartParser: updated product', [
+            'feed' => $feed->asLoggingContext(),
+            'product' => $product->asLoggingContext(),
+            'feedWasAlreadyKnown' => $feedIsAlreadyKnown,
+        ]);
+
+        if (!$feedIsAlreadyKnown) $this->dispatchTouchedEvent($product);
+    }
+
+    protected function createProductData(EDCFeedPartProduct $feed, ProductXML $productXML, EDCProduct $product): void
+    {
+        $productData = new EDCProductData();
+        $productData->product()->associate($product);
+        $productData->feedPartProduct()->associate($feed);
+        $productData->artnr = $productXML->getArtNr();
+
+        $product->saveData($productData);
+    }
+
+    protected function createOrUpdateVariants(
+        EDCFeedPartProduct $feed,
+        ProductXML $productXML,
+        EDCProduct $product
+    ): void
+    {
+        foreach ($productXML->getVariants() as $variant) {
+            $this->createOrUpdateVariant($feed, $variant, $product);
+        }
+    }
+
+    protected function createOrUpdateVariant(
+        EDCFeedPartProduct $feed,
+        VariantXML $variantXML,
+        EDCProduct $product
+    ): void
+    {
+        $variant = $this->tryToFetchExistingVariant($product, $variantXML);
+
+        $variant
+            ? $this->updateVariant($feed, $variantXML, $variant)
+            : $this->createVariant($feed, $variantXML, $product);
+    }
+
+    protected function tryToFetchExistingVariant(EDCProduct $product, VariantXML $variantXML): ?EDCProductVariant
+    {
+        return $product->variants()->where('edc_id', $variantXML->getEDCID())->first();
+    }
+
+    protected function createVariant(EDCFeedPartProduct $feed, VariantXML $variantXML, EDCProduct $product): void
+    {
+        $variant = new EDCProductVariant();
+        $variant->product()->associate($product);
+        $variant->edc_id = $variantXML->getEDCID();
+        $variant->save();
+
+        $this->createVariantData($feed, $variantXML, $variant);
+
+        $this->logger->info('ProductFeedPartParser: created variant', [
+            'feed' => $feed->asLoggingContext(),
+            'product' => $product->asLoggingContext(),
+            'variant' => $variant->asLoggingContext(),
+        ]);
+    }
+
+    protected function updateVariant(EDCFeedPartProduct $feed, VariantXML $variantXML, EDCProductVariant $variant): void
+    {
+        $this->createVariantData($feed, $variantXML, $variant);
+
+        $this->logger->info('ProductFeedPartParser: updated variant', [
+            'feed' => $feed->asLoggingContext(),
+            'product' => $variant->product->asLoggingContext(),
+            'variant' => $variant->asLoggingContext(),
+        ]);
+    }
+
+    protected function createVariantData(
+        EDCFeedPartProduct $feed,
+        VariantXML $variantXML,
+        EDCProductVariant $variant
+    ): void
+    {
+        $variantData = new EDCProductVariantData();
+        $variantData->productVariant()->associate($variant);
+        $variantData->feedPartProduct()->associate($feed);
+        $variantData->subartnr = $variantXML->getSubArtNr();
+
+        $variant->saveData($variantData);
+    }
+
+    protected function fetchOrCreateBrand(ProductXML $productXML): Brand
+    {
+        if (!($brand = Brand::withBrandID($productXML->getBrandID())->first())) {
+            $brand = new Brand();
+            $brand->edc_brand_id = $productXML->getBrandID();
+            $brand->brand_name = $productXML->getBrandName();
+            $brand->save();
+        }
+
+        return $brand;
+    }
+
+    protected function dispatchTouchedEvent(EDCProduct $product): void
+    {
+        $this->logger->info('ProductFeedPartParser: dispatch product touched event', [
+            'product' => $product->asLoggingContext(),
+        ]);
+
+        $e = new ProductTouched($product);
+        $this->eventDispatcher->dispatch($e);
+    }
+
+    protected function isFeedAlreadyKnown(EDCFeedPartProduct $feed, EDCProduct $product): bool
+    {
+        return $product->currentData->feedPartProduct->file->checksum === $feed->file->checksum;
+    }
 }

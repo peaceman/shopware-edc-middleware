@@ -15,12 +15,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property int $id
  * @property int $product_variant_id
+ * @property int $feed_part_product_id
  * @property int|null $feed_part_stock_id
+ * @property string $subartnr
  * @property Carbon|null $current_until
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *
  * @property-read EDCProductVariant $productVariant
+ * @property-read EDCFeedPartProduct $feedPartProduct
  * @property-read EDCFeedPartStock|null $feedPartStock
  */
 class EDCProductVariantData extends Model
@@ -31,6 +34,11 @@ class EDCProductVariantData extends Model
     public function productVariant(): BelongsTo
     {
         return $this->belongsTo(EDCProductVariant::class, 'product_variant_id', 'id');
+    }
+
+    public function feedPartProduct(): BelongsTo
+    {
+        return $this->belongsTo(EDCFeedPartProduct::class, 'feed_part_product_id', 'id');
     }
 
     public function feedPartStock(): BelongsTo

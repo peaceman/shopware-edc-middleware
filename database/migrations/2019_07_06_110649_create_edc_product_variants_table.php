@@ -17,11 +17,13 @@ class CreateEdcProductVariantsTable extends Migration
             $table->bigIncrements('id');
 
             $table->unsignedBigInteger('product_id');
-            $table->string('subartnr');
+            $table->string('edc_id');
 
             $table->foreign('product_id', 'epv_ep_fk')
                 ->references('id')->on('edc_products')
                 ->onUpdate('cascade')->onDelete('cascade');
+
+            $table->unique('edc_id', 'epv_edc_id_uq');
 
             $table->timestamps();
         });

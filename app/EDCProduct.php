@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $id
  * @property int $brand_id
  * @property string $edc_id
- * @property string $artnr
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *
@@ -57,5 +56,12 @@ class EDCProduct extends Model
     public function saveData(EDCProductData $data): void
     {
         (new RetiringRelation($this, 'currentData'))->save($data);
+    }
+
+    public function asLoggingContext(): array
+    {
+        return $this->only([
+            'id', 'brand_id', 'edc_id',
+        ]);
     }
 }

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $product_id
  * @property int $feed_part_product_id
+ * @property string $artnr
  * @property Carbon|null $current_until
  * @property Carbon $created_at
  * @property Carbon $updated_at

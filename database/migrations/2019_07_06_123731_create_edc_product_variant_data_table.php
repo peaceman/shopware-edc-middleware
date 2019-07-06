@@ -17,12 +17,19 @@ class CreateEdcProductVariantDataTable extends Migration
             $table->bigIncrements('id');
 
             $table->unsignedBigInteger('product_variant_id');
+            $table->unsignedBigInteger('feed_part_product_id');
             $table->unsignedBigInteger('feed_part_stock_id')->nullable();
+
+            $table->string('subartnr');
             $table->timestamp('current_until')->nullable();
 
             $table->foreign('product_variant_id', 'epvd_epv_fk')
                 ->references('id')->on('edc_product_variants')
                 ->onUpdate('cascade')->onDelete('cascade');
+
+            $table->foreign('feed_part_product_id', 'epvd_efpp_fk')
+                ->references('id')->on('edc_feed_part_products')
+                ->onUpdate('cascade')->onDelete('restrict');
 
             $table->foreign('feed_part_stock_id', 'epvd_efps_fk')
                 ->references('id')->on('edc_feed_part_stocks')

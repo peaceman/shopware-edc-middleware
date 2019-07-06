@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  *
  * @property-read BrandDiscount|null $currentDiscount
  * @property-read BrandDiscount[] $discounts
+ *
+ * @method static Builder withBrandID(string $brandID)
  */
 class Brand extends Model
 {

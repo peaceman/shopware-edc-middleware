@@ -17,6 +17,9 @@ class CreateEdcProductDataTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('feed_part_product_id');
+
+            $table->string('artnr');
+
             $table->timestamp('current_until')->nullable();
 
             $table->foreign('product_id', 'epd_ep_fk')

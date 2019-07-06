@@ -19,7 +19,6 @@ class CreateEdcProductsTable extends Migration
             $table->unsignedBigInteger('brand_id');
 
             $table->string('edc_id');
-            $table->string('artnr');
 
             $table->unique('edc_id', 'ep_edc_id_uq');
 
