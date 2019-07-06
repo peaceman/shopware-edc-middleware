@@ -5,6 +5,7 @@
 
 namespace App\EDC\Import\Jobs;
 
+use App\EDC\Import\Parser\ProductFeedPartParser;
 use App\EDCFeedPartProduct;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -16,5 +17,10 @@ class ParseProductFeedPart implements ShouldQueue
     public function __construct(EDCFeedPartProduct $feedPart)
     {
         $this->feedPart = $feedPart;
+    }
+
+    public function handle(ProductFeedPartParser $parser)
+    {
+        $parser->parse($this->feedPart);
     }
 }
