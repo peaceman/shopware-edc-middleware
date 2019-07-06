@@ -1,0 +1,61 @@
+<?php
+/**
+ * lel since 2019-07-06
+ */
+
+namespace App;
+
+use App\Utils\RetiringRelation;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
+/**
+ * Class EDCProduct
+ * @package App
+ *
+ * @property int $id
+ * @property int $brand_id
+ * @property string $edc_id
+ * @property string $artnr
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ *
+ * @property-read Brand $brand
+ * @property-read EDCProductData $currentData
+ * @property-read EDCProductData[] $data
+ * @property-read EDCProductVariant[] $variants
+ */
+class EDCProduct extends Model
+{
+    protected $table = 'edc_products';
+    protected static $unguarded = true;
+
+    public function brand(): BelongsTo
+    {
+        return $this->belongsTo(Brand::class, 'brand_id', 'id');
+    }
+
+    public function currentData(): HasOne
+    {
+        return $this->hasOne(EDCProductData::class, 'product_id', 'id')
+            ->whereNull('current_until');
+    }
+
+    public function data(): HasMany
+    {
+        return $this->hasMany(EDCProductData::class, 'product_id', 'id');
+    }
+
+    public function variants(): HasMany
+    {
+        return $this->hasMany(EDCProductVariant::class, 'product_id', 'id');
+    }
+
+    public function saveData(EDCProductData $data): void
+    {
+        (new RetiringRelation($this, 'currentData'))->save($data);
+    }
+}

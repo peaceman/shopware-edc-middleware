@@ -5,7 +5,7 @@
 
 namespace App;
 
-use App\EDC\Import\Events\BrandDiscountTouched;
+use App\Utils\RetiringRelation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -43,19 +43,7 @@ class Brand extends Model
 
     public function saveDiscount(BrandDiscount $discount): void
     {
-        $this->retireCurrentDiscount();
-
-        $this->currentDiscount()->save($discount);
-
-        $this->setRelation('currentDiscount', $discount);
-    }
-
-    protected function retireCurrentDiscount(): void
-    {
-        if (!$this->currentDiscount) return;
-
-        $this->currentDiscount->update(['current_until' => now()]);
-        $this->unsetRelation('currentDiscount');
+        (new RetiringRelation($this, 'currentDiscount'))->save($discount);
     }
 
     public function scopeWithBrandID(Builder $query, string $brandID): Builder
