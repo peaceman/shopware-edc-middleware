@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class EDCFeed
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon $updated_at
  *
  * @property-read ResourceFile $file
+ * @property-read EDCFeedPartProduct[] $productFeedParts
  */
 class EDCFeed extends Model
 {
@@ -43,6 +45,11 @@ class EDCFeed extends Model
     public function scopeWithType(Builder $query, string $feedType): Builder
     {
         return $query->where('type', $feedType);
+    }
+
+    public function productFeedParts(): HasMany
+    {
+        return $this->hasMany(EDCFeedPartProduct::class, 'full_feed_id', 'id');
     }
 
     public function asLoggingContext(): array
