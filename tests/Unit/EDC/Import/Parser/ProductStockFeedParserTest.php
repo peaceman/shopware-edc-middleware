@@ -5,6 +5,7 @@
 
 namespace Tests\Unit\EDC\Import\Parser;
 
+use App\EDC\Import\Jobs\ParseProductStockFeedPart;
 use App\EDC\Import\Parser\ProductStockFeedParser;
 use App\EDCFeed;
 use App\EDCFeedPartStock;

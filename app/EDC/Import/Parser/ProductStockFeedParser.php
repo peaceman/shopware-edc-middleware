@@ -6,6 +6,7 @@
 namespace App\EDC\Import\Parser;
 
 use App\EDC\Import\Exceptions\MissingProductIDInStockFeed;
+use App\EDC\Import\Jobs\ParseProductStockFeedPart;
 use App\EDCFeed;
 use App\EDCFeedPartStock;
 use App\ResourceFile\StorageDirector;
@@ -16,7 +17,6 @@ use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Collection;
 use Psr\Log\LoggerInterface;
-use Tests\Unit\EDC\Import\Parser\ParseProductStockFeedPart;
 use XMLReader;
 
 class ProductStockFeedParser extends FeedParser
