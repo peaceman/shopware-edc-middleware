@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property-read ResourceFile $file
  * @property-read EDCFeedPartProduct[] $productFeedParts
+ * @property-read EDCFeedPartStock[] $stockFeedParts
  */
 class EDCFeed extends Model
 {
@@ -50,6 +51,11 @@ class EDCFeed extends Model
     public function productFeedParts(): HasMany
     {
         return $this->hasMany(EDCFeedPartProduct::class, 'full_feed_id', 'id');
+    }
+
+    public function stockFeedParts(): HasMany
+    {
+        return $this->hasMany(EDCFeedPartStock::class, 'full_feed_id', 'id');
     }
 
     public function asLoggingContext(): array
