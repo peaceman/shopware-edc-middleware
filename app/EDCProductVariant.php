@@ -7,6 +7,7 @@ namespace App;
 
 use App\Utils\RetiringRelation;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -50,6 +51,11 @@ class EDCProductVariant extends Model
     public function saveData(EDCProductVariantData $data)
     {
         (new RetiringRelation($this, 'currentData'))->save($data);
+    }
+
+    public function scopeWithEDCID(Builder $query, string $edcID): Builder
+    {
+        return $query->where('edc_id', $edcID);
     }
 
     public function asLoggingContext(): array
