@@ -33,3 +33,14 @@ $factory->define(\App\EDCProductVariantData::class, function (Faker $faker) {
 $factory->afterCreating(\App\EDCProductVariant::class, function (\App\EDCProductVariant $variant, Faker $faker) {
     $variant->saveData(factory(\App\EDCProductVariantData::class)->make());
 });
+
+$factory->define(\App\EDCProductImage::class, function (Faker $faker) {
+    return [
+        'identifier' => \App\EDCProductImage::fetchNewIdentifier(),
+        'filename' => $faker->domainWord . '.png',
+        'etag' => \Illuminate\Support\Str::random(12),
+        'file_id' => function () {
+            return factory(\App\ResourceFile\ResourceFile::class)->create()->id;
+        }
+    ];
+});

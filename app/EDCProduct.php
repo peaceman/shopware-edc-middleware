@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read EDCProductData $currentData
  * @property-read EDCProductData[] $data
  * @property-read EDCProductVariant[] $variants
+ * @property-read EDCProductImage[] $images;
  *
  * @method static Builder withEDCID(string $edcID)
  */
@@ -54,6 +55,11 @@ class EDCProduct extends Model
     public function variants(): HasMany
     {
         return $this->hasMany(EDCProductVariant::class, 'product_id', 'id');
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(EDCProductImage::class, 'product_id', 'id');
     }
 
     public function saveData(EDCProductData $data): void

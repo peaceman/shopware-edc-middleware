@@ -11,8 +11,6 @@ use App\EDC\Import\Jobs\ParseDiscountFeed;
 use App\EDC\Import\Jobs\ParseProductFeed;
 use App\EDC\Import\Jobs\ParseProductStockFeed;
 use App\EDCFeed;
-use App\ResourceFile\Jobs\DeleteUnusedLocals;
-use App\ResourceFile\Jobs\ForceDeleteSoftDeleted;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
@@ -41,6 +39,7 @@ class EDCImportServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerParseFeedJobs();
+        $this->registerProductImageLoader();
     }
 
     protected function registerParseFeedJobs()
@@ -76,5 +75,14 @@ class EDCImportServiceProvider extends ServiceProvider
                 $eventDispatcher->listen($event, $listener);
             }
         }
+    }
+
+    protected function registerProductImageLoader(): void
+    {
+        $this->app->extend(ProductImageLoader::class, function (ProductImageLoader $loader): ProductImageLoader {
+            $loader->setBaseURI(config('edc.imageBaseURI'));
+
+            return $loader;
+        });
     }
 }

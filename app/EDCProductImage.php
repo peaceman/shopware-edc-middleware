@@ -43,4 +43,11 @@ class EDCProductImage extends Model
     {
         return $this->belongsTo(ResourceFile::class, 'file_id', 'id');
     }
+
+    public function asLoggingContext(): array
+    {
+        return $this->only([
+            'id', 'product_id', 'identifier', 'filename', 'etag', 'file_id',
+        ]);
+    }
 }

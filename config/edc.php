@@ -8,4 +8,5 @@ return [
         EDCFeed::TYPE_PRODUCTS => 'https://plx-fill.me',
         EDCFeed::TYPE_PRODUCT_STOCKS => 'https://plx-fill.me',
     ],
+    'imageBaseURI' => 'https://plx-fill.me/500'
 ];
