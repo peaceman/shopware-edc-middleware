@@ -7,6 +7,7 @@ namespace App\EDC\Import\Parser;
 
 use App\Brand;
 use App\EDC\Import\Events\ProductTouched;
+use App\EDC\Import\ProductImageLoader;
 use App\EDC\Import\ProductXML;
 use App\EDC\Import\VariantXML;
 use App\EDCFeedPartProduct;
@@ -14,20 +15,52 @@ use App\EDCProduct;
 use App\EDCProductData;
 use App\EDCProductVariant;
 use App\EDCProductVariantData;
+use App\ResourceFile\StorageDirector;
+use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
+use Illuminate\Database\ConnectionInterface;
+use Psr\Log\LoggerInterface;
 
 class ProductFeedPartParser extends FeedParser
 {
+    /** @var ProductImageLoader */
+    protected $imageLoader;
+
+    /** @var array */
+    protected $eventQueue = [];
+
+    public function __construct(
+        LoggerInterface $logger,
+        ConnectionInterface $dbConnection,
+        EventDispatcher $eventDispatcher,
+        StorageDirector $storageDirector,
+        ProductImageLoader $imageLoader
+    )
+    {
+        parent::__construct($logger, $dbConnection, $eventDispatcher, $storageDirector);
+
+        $this->imageLoader = $imageLoader;
+    }
+
     public function parse(EDCFeedPartProduct $feed): void
     {
         $productXML = $this->createProductXML($feed);
 
-        $this->dbConnection->transaction(function () use ($feed, $productXML) {
+        /** @var EDCProduct $product */
+        $product = $this->dbConnection->transaction(function () use ($feed, $productXML): EDCProduct {
             $product = $this->tryToFetchExistingProduct($productXML);
 
-            $product
-                ? $this->updateProduct($feed, $productXML, $product)
-                : $this->createProduct($feed, $productXML);
+            if ($product) {
+                $this->updateProduct($feed, $productXML, $product);
+            } else {
+                $product = $this->createProduct($feed, $productXML);
+            }
+
+            return $product;
         });
+
+        $this->loadImages($product);
+
+        $this->dispatchQueuedEvents();
     }
 
     protected function createProductXML(EDCFeedPartProduct $feed): ProductXML
@@ -44,7 +77,7 @@ class ProductFeedPartParser extends FeedParser
         return EDCProduct::query()->where('edc_id', $edcID)->first();
     }
 
-    protected function createProduct(EDCFeedPartProduct $feed, ProductXML $productXML): void
+    protected function createProduct(EDCFeedPartProduct $feed, ProductXML $productXML): EDCProduct
     {
         $product = new EDCProduct();
         $product->edc_id = $productXML->getEDCID();
@@ -58,7 +91,9 @@ class ProductFeedPartParser extends FeedParser
             'product' => $product->asLoggingContext(),
         ]);
 
-        $this->dispatchTouchedEvent($product);
+        $this->eventQueue[] = new ProductTouched($product);
+
+        return $product;
     }
 
     protected function updateProduct(EDCFeedPartProduct $feed, ProductXML $productXML, EDCProduct $product): void
@@ -74,7 +109,7 @@ class ProductFeedPartParser extends FeedParser
             'feedWasAlreadyKnown' => $feedIsAlreadyKnown,
         ]);
 
-        if (!$feedIsAlreadyKnown) $this->dispatchTouchedEvent($product);
+        if (!$feedIsAlreadyKnown) $this->eventQueue[] = new ProductTouched($product);;
     }
 
     protected function createProductData(EDCFeedPartProduct $feed, ProductXML $productXML, EDCProduct $product): void
@@ -169,18 +204,23 @@ class ProductFeedPartParser extends FeedParser
         return $brand;
     }
 
-    protected function dispatchTouchedEvent(EDCProduct $product): void
-    {
-        $this->logger->info('ProductFeedPartParser: dispatch product touched event', [
-            'product' => $product->asLoggingContext(),
-        ]);
-
-        $e = new ProductTouched($product);
-        $this->eventDispatcher->dispatch($e);
-    }
-
     protected function isFeedAlreadyKnown(EDCFeedPartProduct $feed, EDCProduct $product): bool
     {
         return $product->currentData->feedPartProduct->file->checksum === $feed->file->checksum;
+    }
+
+    protected function dispatchQueuedEvents(): void
+    {
+        while ($e = array_shift($this->eventQueue)) {
+            $this->eventDispatcher->dispatch($e);
+        }
+    }
+
+    protected function loadImages(EDCProduct $product): void
+    {
+        $feedPart = $product->currentData->feedPartProduct;
+        $productXML = ProductXML::fromFilePath($this->storageDirector->getLocalPath($feedPart->file));
+
+        $this->imageLoader->loadImages($productXML->getPicNames());
     }
 }

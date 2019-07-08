@@ -47,4 +47,11 @@ class ProductXML
     {
         return (string)$this->xml->brand->title;
     }
+
+    public function getPicNames(): array
+    {
+        return array_map(function (\SimpleXMLElement $xml) {
+            return (string)$xml;
+        }, $this->xml->xpath('pics/pic'));
+    }
 }

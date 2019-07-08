@@ -7,6 +7,7 @@ namespace Tests\Unit\EDC\Import\Parser;
 
 use App\EDC\Import\Events\ProductTouched;
 use App\EDC\Import\Parser\ProductFeedPartParser;
+use App\EDC\Import\ProductImageLoader;
 use App\EDCFeed;
 use App\EDCFeedPartProduct;
 use App\EDCProduct;
@@ -37,6 +38,13 @@ class ProductFeedPartParserTest extends TestCase
 
     public function testRegularProductParsing()
     {
+        $this->app->instance(ProductImageLoader::class, $this->createProductImageLoaderMock([
+            '02308550000.jpg',
+            '02308550000_2.jpg',
+            '02308550000_3.jpg',
+            '02308550000_4.jpg',
+        ]));
+
         Event::fake();
         $feed = $this->createProductFeedPartFromFile(fixture_path('product-1.xml'));
         $parser = $this->getProductFeedPartParser();
@@ -98,6 +106,8 @@ class ProductFeedPartParserTest extends TestCase
     public function testUpdatingWithDuplicateFeedPartDoesntTriggerTheTouchedEvent()
     {
         // first pass
+        $this->app->instance(ProductImageLoader::class, $this->createProductImageLoaderMock());
+
         Event::fake();
         $parser = $this->getProductFeedPartParser();
 
@@ -105,6 +115,13 @@ class ProductFeedPartParserTest extends TestCase
         $parser->parse($feed);
 
         // second pass
+        $this->app->instance(ProductImageLoader::class, $this->createProductImageLoaderMock([
+            '02308550000.jpg',
+            '02308550000_2.jpg',
+            '02308550000_3.jpg',
+            '02308550000_4.jpg',
+        ]));
+
         Event::fake();
         $parser = $this->getProductFeedPartParser();
 
@@ -130,6 +147,8 @@ class ProductFeedPartParserTest extends TestCase
     public function testUpdatingProductParsing()
     {
         // first pass
+        $this->app->instance(ProductImageLoader::class, $this->createProductImageLoaderMock());
+
         Event::fake();
         $parser = $this->getProductFeedPartParser();
 
@@ -137,6 +156,13 @@ class ProductFeedPartParserTest extends TestCase
         $parser->parse($feed);
 
         // second pass
+        $this->app->instance(ProductImageLoader::class, $this->createProductImageLoaderMock([
+            '02308550000.jpg',
+            '02308550000_2.jpg',
+            '02308550000_3.jpg',
+            '02308550000_4.jpg',
+        ]));
+
         Event::fake();
         $parser = $this->getProductFeedPartParser();
 
@@ -177,5 +203,25 @@ class ProductFeedPartParserTest extends TestCase
     protected function getProductFeedPartParser(): ProductFeedPartParser
     {
         return $this->app[ProductFeedPartParser::class];
+    }
+
+    protected function createProductImageLoaderMock(array $expectedFileNames = []): ProductImageLoader
+    {
+        $loader = $this->getMockBuilder(ProductImageLoader::class)
+            ->setMethods(['loadImages'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        if (empty($expectedFileNames)) {
+            $loader->expects(static::any())
+                ->method('loadImages')
+                ->withAnyParameters();
+        } else {
+            $loader->expects(static::once())
+                ->method('loadImages')
+                ->with($expectedFileNames);
+        }
+
+        return $loader;
     }
 }
