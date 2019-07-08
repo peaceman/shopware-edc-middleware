@@ -41,6 +41,9 @@ $factory->define(\App\EDCProductImage::class, function (Faker $faker) {
         'etag' => \Illuminate\Support\Str::random(12),
         'file_id' => function () {
             return factory(\App\ResourceFile\ResourceFile::class)->create()->id;
+        },
+        'product_id' => function () {
+            return factory(\App\EDCProduct::class)->create();
         }
     ];
 });

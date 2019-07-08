@@ -11,6 +11,5 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('product-images/{identifier}', 'ProductImageController')
+    ->name('product-images');
