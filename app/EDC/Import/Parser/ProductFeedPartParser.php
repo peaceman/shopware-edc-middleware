@@ -58,7 +58,7 @@ class ProductFeedPartParser extends FeedParser
             return $product;
         });
 
-        $this->loadImages($product);
+        $this->loadImages($product, $productXML);
 
         $this->dispatchQueuedEvents();
     }
@@ -216,11 +216,8 @@ class ProductFeedPartParser extends FeedParser
         }
     }
 
-    protected function loadImages(EDCProduct $product): void
+    protected function loadImages(EDCProduct $product, ProductXML $productXML): void
     {
-        $feedPart = $product->currentData->feedPartProduct;
-        $productXML = ProductXML::fromFilePath($this->storageDirector->getLocalPath($feedPart->file));
-
-        $this->imageLoader->loadImages($productXML->getPicNames());
+        $this->imageLoader->loadImages($product, $productXML->getPicNames());
     }
 }

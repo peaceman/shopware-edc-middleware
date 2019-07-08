@@ -16,6 +16,7 @@ use App\ResourceFile\StorageDirector;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Constraint\IsInstanceOf;
 use Tests\TestCase;
 use function App\Utils\fixture_path;
 
@@ -219,7 +220,7 @@ class ProductFeedPartParserTest extends TestCase
         } else {
             $loader->expects(static::once())
                 ->method('loadImages')
-                ->with($expectedFileNames);
+                ->with(new IsInstanceOf(EDCProduct::class), $expectedFileNames);
         }
 
         return $loader;
