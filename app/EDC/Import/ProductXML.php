@@ -54,4 +54,24 @@ class ProductXML
             return (string)$xml;
         }, $this->xml->xpath('pics/pic'));
     }
+
+    public function getTitle(): string
+    {
+        return (string)$this->xml->title;
+    }
+
+    public function getVATDE(): float
+    {
+        return (float)$this->xml->price->vatde;
+    }
+
+    public function getDescription(): string
+    {
+        return (string)$this->xml->description;
+    }
+
+    public function getB2CPrice(): float
+    {
+        return (float)$this->xml->price->b2c;
+    }
 }

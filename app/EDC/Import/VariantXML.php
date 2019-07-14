@@ -27,4 +27,33 @@ class VariantXML
     {
         return (string)$this->xml->subartnr;
     }
+
+    public function isInStock(): bool
+    {
+        return strtolower($this->getStock()) === 'y';
+    }
+
+    public function getStock(): string
+    {
+        return (string)$this->xml->stock;
+    }
+
+    public function getSize(): ?string
+    {
+        if ($this->getType() !== 'S') return null;
+
+        $title = trim((string)$this->xml->title);
+
+        return empty($title) ? null : $title;
+    }
+
+    public function getType(): string
+    {
+        return (string)$this->xml->type;
+    }
+
+    public function getEAN(): string
+    {
+        return (string)$this->xml->ean;
+    }
 }

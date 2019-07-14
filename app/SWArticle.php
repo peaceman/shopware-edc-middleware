@@ -37,4 +37,9 @@ class SWArticle extends Model
     {
         return $this->hasMany(SWVariant::class, 'article_id', 'id');
     }
+
+    public function asLoggingContext(): array
+    {
+        return $this->only(['id', 'sw_id']);
+    }
 }

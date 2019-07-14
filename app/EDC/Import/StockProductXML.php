@@ -27,4 +27,14 @@ class StockProductXML
     {
         return (string)$this->xml->variantid;
     }
+
+    public function isInStock(): bool
+    {
+        return strtolower($this->getStock()) === 'j';
+    }
+
+    public function getStock(): string
+    {
+        return (string)$this->xml->stock;
+    }
 }
