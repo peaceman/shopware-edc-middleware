@@ -8,9 +8,6 @@ namespace App\ResourceFile;
 use App\ResourceFile\Jobs\UpdateLastAccessTime;
 use App\ResourceFile\Jobs\UploadToCloud;
 use Assert\Assert;
-use function GuzzleHttp\Psr7\copy_to_stream;
-use function GuzzleHttp\Psr7\stream_for;
-use function GuzzleHttp\Psr7\try_fopen;
 use Illuminate\Contracts\Bus\Dispatcher as JobDispatcher;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Str;
@@ -18,6 +15,9 @@ use League\Flysystem\Adapter\Local;
 use Psr\Http\Message\StreamInterface;
 use SplFileInfo;
 use Symfony\Component\HttpFoundation\File\File;
+use function GuzzleHttp\Psr7\copy_to_stream;
+use function GuzzleHttp\Psr7\stream_for;
+use function GuzzleHttp\Psr7\try_fopen;
 
 class StorageDirector
 {
@@ -234,17 +234,15 @@ class StorageDirector
     public function forceDeleteFile(ResourceFile $rf): void
     {
         if ($rf->localInstance) {
-            $rf->localInstance->delete();
-            $rf->unsetRelation('localInstance');
+            $this->deleteFileInstance($rf->localInstance);
 
-            $this->localFS->delete($rf->path);
+            $rf->unsetRelation('localInstance');
         }
 
         if ($rf->cloudInstance) {
-            $rf->cloudInstance->delete();
-            $rf->unsetRelation('cloudInstance');
+            $this->deleteFileInstance($rf->cloudInstance);
 
-            $this->cloudFS->delete($rf->path);
+            $rf->unsetRelation('cloudInstance');
         }
 
         $rf->forceDelete();
