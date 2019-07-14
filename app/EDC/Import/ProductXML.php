@@ -74,4 +74,9 @@ class ProductXML
     {
         return (float)$this->xml->price->b2c;
     }
+
+    public function shouldApplyDiscount(): bool
+    {
+        return (string)$this->xml->price->discount === 'Y';
+    }
 }

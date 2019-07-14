@@ -5,7 +5,19 @@
 
 namespace App\SW\Export;
 
+use App\EDC\Import\ProductXML;
+use App\EDCProduct;
+
 class PriceCalculator
 {
+    public function calcPrice(EDCProduct $edcProduct, ProductXML $productXML)
+    {
+        $b2cPrice = $productXML->getB2CPrice();
 
+        if (!$productXML->shouldApplyDiscount()) return $b2cPrice;
+        if (!($brand = $edcProduct->brand)) return $b2cPrice;
+        if (!($currentDiscount = $brand->currentDiscount)) return $b2cPrice;
+
+        return $b2cPrice - ($b2cPrice * ($currentDiscount->value / 100));
+    }
 }
