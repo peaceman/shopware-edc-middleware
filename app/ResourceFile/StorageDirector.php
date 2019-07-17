@@ -194,7 +194,10 @@ class StorageDirector
 
     protected function flushUploadQueue(): void
     {
-        $job = new UploadToCloud(array_unique($this->uploadQueue));
+        $queue = array_unique($this->uploadQueue);
+        if (empty($queue)) return;
+
+        $job = new UploadToCloud($queue);
         $this->uploadQueue = [];
 
         $this->jobDispatcher->dispatch($job);
@@ -202,7 +205,10 @@ class StorageDirector
 
     protected function flushUpdateLastAccessTimeQueue(): void
     {
-        $job = new UpdateLastAccessTime(array_unique($this->updateLastAccessTimeQueue));
+        $queue = array_unique($this->updateLastAccessTimeQueue);
+        if (empty($queue)) return;
+
+        $job = new UpdateLastAccessTime($queue);
         $this->updateLastAccessTimeQueue = [];
 
         $this->jobDispatcher->dispatch($job);
