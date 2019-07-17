@@ -5,6 +5,7 @@
 
 namespace App\Listeners;
 
+use Illuminate\Contracts\Queue\Job;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
@@ -49,8 +50,23 @@ class QueueWorkerEventSubscriber
 
     public function logJobEvent($e)
     {
-        $loggingContext = ['pid' => getmypid(), 'class' => get_class($e), 'jobClass' => get_class($e->job)];
+        $loggingContext = [
+            'pid' => getmypid(),
+            'class' => get_class($e),
+            'jobClass' => get_class($this->getJobInstanceFromEvent($e)),
+        ];
 
         $this->log->debug('JobEvent', $loggingContext);
+    }
+
+    protected function getJobInstanceFromEvent($event)
+    {
+        /** @var Job $job */
+        $job = $event->job;
+        $payload = $job->payload();
+
+        $command = data_get($payload, 'data.command', false);
+
+        return $command ? unserialize($command) : null;
     }
 }
