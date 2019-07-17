@@ -6,6 +6,8 @@
 namespace App\Listeners;
 
 use Illuminate\Events\Dispatcher;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Queue\Events\WorkerStopping;
 use Psr\Log\LoggerInterface;
 
@@ -24,6 +26,8 @@ class QueueWorkerEventSubscriber
     public function subscribe(Dispatcher $events)
     {
         $events->listen(WorkerStopping::class, [$this, 'onWorkerStopping']);
+        $events->listen(JobProcessing::class, [$this, 'logJobEvent']);
+        $events->listen(JobProcessed::class, [$this, 'logJobEvent']);
     }
 
     public function onWorkerStopping(WorkerStopping $e)
@@ -41,5 +45,12 @@ class QueueWorkerEventSubscriber
                 $this->log->info('WorkerStopping: exceeded memory limit', $loggingContext);
                 break;
         }
+    }
+
+    public function logJobEvent($e)
+    {
+        $loggingContext = ['pid' => getmygid(), 'class' => get_class($e)];
+
+        $this->log->debug('JobEvent', $loggingContext);
     }
 }
