@@ -35,7 +35,7 @@ class ResourceFileServiceProvider extends ServiceProvider
 
     protected function registerStorageDirector()
     {
-        $this->app->bind(StorageDirector::class, function (): StorageDirector {
+        $this->app->singleton(StorageDirector::class, function (): StorageDirector {
             /** @var FilesystemManager $fsm */
             $fsm = $this->app[FilesystemManager::class];
 
