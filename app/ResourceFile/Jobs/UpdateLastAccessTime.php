@@ -12,6 +12,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class UpdateLastAccessTime implements ShouldQueue
 {
+    public $queue = 'long-running';
+
     /** @var int[] */
     protected $rfiIDs;
 

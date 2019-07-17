@@ -12,6 +12,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class UploadToCloud implements ShouldQueue
 {
+    public $queue = 'long-running';
+
     protected $rfIDs;
 
     public function __construct(array $rfIDs)
