@@ -11,9 +11,8 @@ use App\ResourceFile\Jobs\DeleteUnusedLocals;
 use App\ResourceFile\Jobs\ForceDeleteSoftDeleted;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Bus\Dispatcher;
-use \Illuminate\Foundation\Console\Kernel;
 use Illuminate\Filesystem\FilesystemManager;
-use Illuminate\Foundation\Console\ClosureCommand;
+use Illuminate\Foundation\Console\Kernel;
 use Illuminate\Support\ServiceProvider;
 
 class ResourceFileServiceProvider extends ServiceProvider
@@ -21,6 +20,8 @@ class ResourceFileServiceProvider extends ServiceProvider
     public function boot()
     {
         if ($this->app->runningInConsole()) $this->scheduleJobs();
+
+        $this->registerJobProcessingSubscriber();
     }
 
     public function register()
@@ -87,5 +88,13 @@ class ResourceFileServiceProvider extends ServiceProvider
             $schedule->job(DeleteUnusedLocals::class)->daily();
             $schedule->job(ForceDeleteSoftDeleted::class)->daily();
         });
+    }
+
+    protected function registerJobProcessingSubscriber()
+    {
+        /** @var \Illuminate\Contracts\Events\Dispatcher $eventDispatcher */
+        $eventDispatcher = $this->app[\Illuminate\Events\Dispatcher::class];
+
+        $eventDispatcher->subscribe($this->app[JobProcessingSubscriber::class]);
     }
 }
