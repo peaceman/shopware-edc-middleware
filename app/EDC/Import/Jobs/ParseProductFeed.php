@@ -7,12 +7,12 @@ namespace App\EDC\Import\Jobs;
 
 use App\EDC\Import\Exceptions\ParserFeedTypeMismatch;
 use App\EDC\Import\Parser\ProductFeedParser;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Psr\Log\LoggerInterface;
 
 class ParseProductFeed extends ParseFeed
 {
+    public $queue = 'long-running';
+
     public function handle(
         LoggerInterface $logger,
         ProductFeedParser $parser

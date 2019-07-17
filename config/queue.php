@@ -66,6 +66,13 @@ return [
             'block_for' => null,
         ],
 
+        'redis-long-running' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'long-running',
+            'retry_after' => 20 * 60,
+        ],
+
     ],
 
     /*

@@ -125,7 +125,7 @@ return [
     |
     */
 
-    'memory_limit' => 64,
+    'memory_limit' => 256,
 
     /*
     |--------------------------------------------------------------------------
@@ -147,6 +147,15 @@ return [
                 'processes' => 10,
                 'tries' => 3,
             ],
+
+            'supervisor-long-running' => [
+                'connection' => 'redis-long-running',
+                'queue' => ['long-running'],
+                'balance' => 'simple',
+                'processes' => 5,
+                'timeout' => 15 * 60,
+                'tries' => 2
+            ]
         ],
 
         'local' => [
