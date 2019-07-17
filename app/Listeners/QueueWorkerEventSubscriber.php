@@ -49,7 +49,7 @@ class QueueWorkerEventSubscriber
 
     public function logJobEvent($e)
     {
-        $loggingContext = ['pid' => getmygid(), 'class' => get_class($e)];
+        $loggingContext = ['pid' => getmypid(), 'class' => get_class($e)];
 
         $this->log->debug('JobEvent', $loggingContext);
     }
