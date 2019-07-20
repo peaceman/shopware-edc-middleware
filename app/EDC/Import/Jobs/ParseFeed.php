@@ -16,6 +16,8 @@ abstract class ParseFeed implements ShouldQueue
     /** @var EDCFeed */
     public $feed;
 
+    public $queue = 'long-running';
+
     final public function __construct(EDCFeed $feed)
     {
         $this->feed = $feed;

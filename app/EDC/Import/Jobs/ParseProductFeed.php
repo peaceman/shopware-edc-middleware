@@ -11,8 +11,6 @@ use Psr\Log\LoggerInterface;
 
 class ParseProductFeed extends ParseFeed
 {
-    public $queue = 'long-running';
-
     public function handle(
         LoggerInterface $logger,
         ProductFeedParser $parser
