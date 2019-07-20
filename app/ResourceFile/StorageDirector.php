@@ -13,6 +13,7 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use League\Flysystem\Adapter\Local;
 use Psr\Http\Message\StreamInterface;
+use Psr\Log\LoggerInterface;
 use SplFileInfo;
 use Symfony\Component\HttpFoundation\File\File;
 use function GuzzleHttp\Psr7\copy_to_stream;
@@ -21,6 +22,9 @@ use function GuzzleHttp\Psr7\try_fopen;
 
 class StorageDirector
 {
+    /** @var LoggerInterface */
+    protected $logger;
+
     /** @var Filesystem */
     protected $localFS;
 
@@ -36,8 +40,14 @@ class StorageDirector
     /** @var int[] */
     protected $updateLastAccessTimeQueue = [];
 
-    public function __construct(Filesystem $localFS, Filesystem $cloudFS, JobDispatcher $jobDispatcher)
-    {
+    public function __construct(
+        Filesystem $localFS,
+        Filesystem $cloudFS,
+        JobDispatcher $jobDispatcher,
+        LoggerInterface $logger
+    ) {
+        $this->logger = $logger;
+
         $this->setLocalFS($localFS);
         $this->setCloudFS($cloudFS);
 
@@ -145,6 +155,10 @@ class StorageDirector
 
     public function persistFile(ResourceFile $rf): void
     {
+        $this->logger->info('StorageDirector: persist file', [
+            'rf' => $rf->asLoggingContext(),
+        ]);
+
         Assert::that($this->localFS->exists($rf->path))->true();
 
         $this->setMetadataFromFilePath($rf, $this->localFS->path($rf->path));
@@ -188,6 +202,8 @@ class StorageDirector
 
     public function flushQueues(): void
     {
+        $this->logger->info('StorageDirector: flush queues');
+
         $this->flushUploadQueue();
         $this->flushUpdateLastAccessTimeQueue();
     }
@@ -220,6 +236,10 @@ class StorageDirector
 
     public function uploadToCloud(ResourceFile $rf): void
     {
+        $this->logger->info('StorageDirector: upload to cloud', [
+            'rf' => $rf->asLoggingContext(),
+        ]);
+
         Assert::that($this->localFS->exists($rf->path))->true();
 
         $this->cloudFS->put($rf->path, $this->localFS->readStream($rf->path));
@@ -235,6 +255,10 @@ class StorageDirector
 
     protected function downloadFromCloud(ResourceFile $rf): void
     {
+        $this->logger->info('StorageDirector: download from cloud', [
+            'rf' => $rf->asLoggingContext(),
+        ]);
+
         Assert::that($this->cloudFS->exists($rf->path))->true();
 
         $this->localFS->put($rf->path, $this->cloudFS->readStream($rf->path));
@@ -245,6 +269,10 @@ class StorageDirector
 
     public function forceDeleteFile(ResourceFile $rf): void
     {
+        $this->logger->info('StorageDirector: force delete file', [
+            'rf' => $rf->asLoggingContext(),
+        ]);
+
         if ($rf->localInstance) {
             $this->deleteFileInstance($rf->localInstance);
 
@@ -264,6 +292,11 @@ class StorageDirector
     {
         $rfi->delete();
         $rf = $rfi->file;
+
+        $this->logger->info('StorageDirector: delete file instance', [
+            'rf' => $rf->asLoggingContext(),
+            'rfi' => $rfi->asLoggingContext(),
+        ]);
 
         switch ($rfi->disk) {
             case 'local':

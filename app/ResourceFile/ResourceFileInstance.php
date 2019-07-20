@@ -32,4 +32,9 @@ class ResourceFileInstance extends Model
     {
         return $this->belongsTo(ResourceFile::class, 'file_id', 'id');
     }
+
+    public function asLoggingContext(): array
+    {
+        return $this->only(['id', 'file_id', 'disk']);
+    }
 }

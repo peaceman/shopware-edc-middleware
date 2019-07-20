@@ -15,6 +15,7 @@ use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Foundation\Console\Kernel;
 use Illuminate\Support\ServiceProvider;
+use Psr\Log\LoggerInterface;
 
 class ResourceFileServiceProvider extends ServiceProvider
 {
@@ -43,7 +44,8 @@ class ResourceFileServiceProvider extends ServiceProvider
             return new StorageDirector(
                 $fsm->disk(),
                 $fsm->cloud(),
-                $this->app[Dispatcher::class]
+                $this->app[Dispatcher::class],
+                $this->app[LoggerInterface::class]
             );
         });
     }
