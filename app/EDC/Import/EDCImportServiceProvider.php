@@ -59,6 +59,16 @@ class EDCImportServiceProvider extends ServiceProvider
                 }
             )
             ->describe('Dispatch job to fetch the specified edc feed');
+
+        $consoleKernel
+            ->command(
+                'edc:extract-categories',
+                function (ProductCategoryExtractor $extractor) {
+                    $categories = $extractor->extract();
+
+                    fwrite(STDOUT, json_encode($categories, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+                }
+            );
     }
 
     protected function scheduleJobs()
