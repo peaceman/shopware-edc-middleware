@@ -90,6 +90,7 @@ class ShopwareArticleInfo
     public function getDetailByNumber(string $number): ?array
     {
         return collect(data_get($this->articleData, 'data.details'))
+            ->push(data_get($this->articleData, 'data.mainDetail'))
             ->where('number', $number)
             ->first();
     }

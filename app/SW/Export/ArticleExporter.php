@@ -256,12 +256,17 @@ class ArticleExporter
             'descriptionLong' => $productXML->getDescription(),
         ];
 
-        // variant or main detail data
-        if (count($variants) > 1) {
+        $configuratorSetGroups = $this->generateConfiguratorSetFromVariants($variants);
+        if (!empty($configuratorSetGroups)) {
             $articleData['configuratorSet'] = [
                 'type' => 0,
-                'groups' => $this->generateConfiguratorSetFromVariants($variants),
+                'groups' => $configuratorSetGroups,
             ];
+        }
+
+        // variant or main detail data
+        if (count($variants) > 1) {
+            $articleData['mainDetail'] = array_shift($variants);
             $articleData['variants'] = $variants;
         } else {
             $articleData['mainDetail'] = $variants[0];

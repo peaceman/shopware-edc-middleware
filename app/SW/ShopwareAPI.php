@@ -9,6 +9,7 @@ use App\Domain\ShopwareArticleInfo;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 
 class ShopwareAPI
@@ -69,20 +70,46 @@ class ShopwareAPI
 
     public function updateShopwareArticle(int $swArticleID, array $articleData): void
     {
-        $response = $this->httpClient->put("/api/articles/{$swArticleID}", [
-            'json' => $articleData
-        ]);
+        try {
+            $response = $this->httpClient->put("/api/articles/{$swArticleID}", [
+                'json' => $articleData
+            ]);
+        } catch (RequestException $e) {
+            $response = $e->getResponse();
+
+            $this->logger->error('ShopwareAPI: failed to update article', [
+                'swArticleID' => $swArticleID,
+                'articleData' => $articleData,
+                'responseHeaders' => $response->getHeaders(),
+                'responseBody' => (string)$response->getBody(),
+            ]);
+
+            throw $e;
+        }
     }
 
     public function createShopwareArticle(array $articleData): ShopwareArticleInfo
     {
-        $response = $this->httpClient->post('/api/articles', [
-            'json' => $articleData
-        ]);
+        try {
+            $response = $this->httpClient->post('/api/articles', [
+                'json' => $articleData
+            ]);
 
-        $articleData = json_decode($response->getBody(), true);
+            $articleData = json_decode($response->getBody(), true);
+            $sai = new ShopwareArticleInfo($articleData);
 
-        return new ShopwareArticleInfo($articleData);
+            return $this->fetchShopwareArticleInfoByArticleID($sai->getArticleID());
+        } catch (RequestException $e) {
+            $response = $e->getResponse();
+
+            $this->logger->error('ShopwareAPI: failed to create article', [
+                'articleData' => $articleData,
+                'responseHeaders' => $response->getHeaders(),
+                'responseBody' => (string)$response->getBody(),
+            ]);
+
+            throw $e;
+        }
     }
 
     public function deactivateShopwareArticle(int $swArticleID): void
