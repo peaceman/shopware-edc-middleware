@@ -12,6 +12,7 @@ use App\EDCFeed;
 use App\EDCFeedPartProduct;
 use App\ResourceFile\StorageDirector;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 use function App\Utils\fixture_path;
@@ -31,6 +32,7 @@ class ProductCategoryExtractorTest extends TestCase
         Storage::fake(Storage::getDefaultCloudDriver());
 
         $this->storageDirector = $this->app[StorageDirector::class];
+        Event::fake();
     }
 
     public function testCategoryExtraction()

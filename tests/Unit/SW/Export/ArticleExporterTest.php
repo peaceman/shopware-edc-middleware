@@ -19,6 +19,7 @@ use App\SW\ShopwareAPI;
 use App\SWArticle;
 use App\SWVariant;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 use function App\Utils\fixture_path;
@@ -38,6 +39,7 @@ class ArticleExporterTest extends TestCase
         Storage::fake(Storage::getDefaultCloudDriver());
 
         $this->storageDirector = $this->app[StorageDirector::class];
+        Event::fake();
     }
 
     public function testExport()

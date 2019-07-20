@@ -10,8 +10,11 @@ use App\EDC\Import\Events\ProductTouched;
 use App\SW\Export\Commands\ExportArticles;
 use App\SW\Export\Listeners\ExportBrandArticles;
 use App\SW\Export\Listeners\ExportTouchedArticle;
+use App\SW\ShopwareAPI;
 use App\Utils\RegistersEventListeners;
+use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
+use Psr\Log\LoggerInterface;
 
 class SWExportServiceProvider extends ServiceProvider
 {
@@ -41,5 +44,18 @@ class SWExportServiceProvider extends ServiceProvider
         $this->commands([
             ExportArticles::class,
         ]);
+    }
+
+    protected function registerShopwareAPI(): void
+    {
+        $this->app->bind(ShopwareAPI::class, function () {
+            $httpClient = new Client([
+                'base_uri' => config('shopware.baseUri'),
+                'auth' => [config('shopware.auth.username'), config('shopware.auth.apiKey')],
+            ]);
+
+            $api = new ShopwareAPI($this->app[LoggerInterface::class], $httpClient);
+            return $api;
+        });
     }
 }
