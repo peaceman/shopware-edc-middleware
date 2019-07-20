@@ -8,16 +8,13 @@ namespace App\EDC\Import\Jobs;
 use App\EDC\Import\Events\FeedFetched;
 use App\EDC\Import\FeedFetcher;
 use App\EDCFeed;
+use App\Jobs\BaseJob;
 use Assert\Assert;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
-class FetchFeed implements ShouldQueue
+class FetchFeed extends BaseJob
 {
-    use InteractsWithQueue;
-
     /** @var string */
     public $feedType;
 

@@ -6,10 +6,10 @@
 namespace App\SW\Export\Jobs;
 
 use App\EDCProduct;
+use App\Jobs\BaseJob;
 use App\SW\Export\ArticleExporter;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ExportArticle implements ShouldQueue
+class ExportArticle extends BaseJob
 {
     /** @var EDCProduct */
     public $edcProduct;

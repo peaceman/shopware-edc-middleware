@@ -5,11 +5,11 @@
 
 namespace App\ResourceFile\Jobs;
 
+use App\Jobs\BaseJob;
 use App\ResourceFile\HouseKeeping\FileInstanceDeleter;
 use App\ResourceFile\HouseKeeping\Providers\UnusedLocalResourceFileInstances;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class DeleteUnusedLocals implements ShouldQueue
+class DeleteUnusedLocals extends BaseJob
 {
     public function handle(FileInstanceDeleter $fileInstanceDeleter, UnusedLocalResourceFileInstances $rfiProvider)
     {

@@ -5,11 +5,11 @@
 
 namespace App\ResourceFile\Jobs;
 
+use App\Jobs\BaseJob;
 use App\ResourceFile\HouseKeeping\FileUploadQueuer;
 use App\ResourceFile\HouseKeeping\Providers\NonCloudResourceFiles;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class QueueNonCloudForUpload implements ShouldQueue
+class QueueNonCloudForUpload extends BaseJob
 {
     public function handle(FileUploadQueuer $uploadQueuer, NonCloudResourceFiles $rfs): void
     {

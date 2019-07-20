@@ -5,12 +5,12 @@
 
 namespace App\ResourceFile\Jobs;
 
+use App\Jobs\BaseJob;
 use App\ResourceFile\ResourceFileInstance;
 use App\ResourceFile\StorageDirector;
 use Assert\Assert;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class UpdateLastAccessTime implements ShouldQueue
+class UpdateLastAccessTime extends BaseJob
 {
     public $queue = 'long-running';
 

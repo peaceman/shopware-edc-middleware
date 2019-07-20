@@ -5,11 +5,11 @@
 
 namespace App\ResourceFile\Jobs;
 
+use App\Jobs\BaseJob;
 use App\ResourceFile\HouseKeeping\FileForceDeleter;
 use App\ResourceFile\HouseKeeping\Providers\SoftDeletedResourceFiles;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ForceDeleteSoftDeleted implements ShouldQueue
+class ForceDeleteSoftDeleted extends BaseJob
 {
     public function handle(FileForceDeleter $forceDeleter, SoftDeletedResourceFiles $rfs): void
     {

@@ -5,12 +5,12 @@
 
 namespace App\ResourceFile\Jobs;
 
+use App\Jobs\BaseJob;
 use App\ResourceFile\ResourceFile;
 use App\ResourceFile\StorageDirector;
 use Assert\Assert;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class UploadToCloud implements ShouldQueue
+class UploadToCloud extends BaseJob
 {
     public $queue = 'long-running';
 

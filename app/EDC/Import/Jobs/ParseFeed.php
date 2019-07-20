@@ -6,13 +6,10 @@
 namespace App\EDC\Import\Jobs;
 
 use App\EDCFeed;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Jobs\BaseJob;
 
-abstract class ParseFeed implements ShouldQueue
+abstract class ParseFeed extends BaseJob
 {
-    use InteractsWithQueue;
-
     /** @var EDCFeed */
     public $feed;
 

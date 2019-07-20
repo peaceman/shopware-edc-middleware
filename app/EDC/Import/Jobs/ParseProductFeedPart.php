@@ -7,9 +7,9 @@ namespace App\EDC\Import\Jobs;
 
 use App\EDC\Import\Parser\ProductFeedPartParser;
 use App\EDCFeedPartProduct;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Jobs\BaseJob;
 
-class ParseProductFeedPart implements ShouldQueue
+class ParseProductFeedPart extends BaseJob
 {
     /** @var EDCFeedPartProduct */
     public $feedPart;
