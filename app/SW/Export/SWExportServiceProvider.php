@@ -37,6 +37,7 @@ class SWExportServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerCommands();
+        $this->registerShopwareAPI();
     }
 
     protected function registerCommands()
