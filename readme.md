@@ -8,3 +8,5 @@
 * edc
   * `php artisan edc:fetch-feed`
   * `php artisan edc:extract-categories`
+* sw
+  * `php artisan sw:export-articles`

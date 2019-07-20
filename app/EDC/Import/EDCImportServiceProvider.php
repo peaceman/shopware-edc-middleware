@@ -46,7 +46,7 @@ class EDCImportServiceProvider extends ServiceProvider
         $this->registerParseFeedJobs();
         $this->registerProductImageLoader();
 
-        if ($this->app->runningInConsole()) $this->registerCommands();
+        $this->registerCommands();
     }
 
     protected function registerCommands()
