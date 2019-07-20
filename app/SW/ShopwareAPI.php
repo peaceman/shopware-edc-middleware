@@ -80,7 +80,7 @@ class ShopwareAPI
             'json' => $articleData
         ]);
 
-        $articleData = json_decode($response->getBody());
+        $articleData = json_decode($response->getBody(), true);
 
         return new ShopwareArticleInfo($articleData);
     }
