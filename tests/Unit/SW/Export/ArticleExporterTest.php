@@ -11,8 +11,10 @@ use App\EDC\Import\ProductImageLoader;
 use App\EDC\Import\ProductXML;
 use App\EDCFeed;
 use App\EDCFeedPartProduct;
+use App\EDCFeedPartStock;
 use App\EDCProduct;
 use App\EDCProductImage;
+use App\EDCProductVariant;
 use App\ResourceFile\StorageDirector;
 use App\SW\Export\PriceCalculator;
 use App\SW\ShopwareAPI;
@@ -421,6 +423,98 @@ class ArticleExporterTest extends TestCase
         }
     }
 
+    public function testExportWithStockOverride()
+    {
+        // setup edc product
+        $imageLoader = $this->createMock(ProductImageLoader::class);
+
+        /** @var ProductFeedPartParser $productFeedPartParser */
+        $productFeedPartParser = $this->app->make(ProductFeedPartParser::class, ['imageLoader' => $imageLoader]);
+        $productFeedPartParser->parse($this->createProductFeedPartFromFile(fixture_path('product-2.xml')));
+
+        /** @var EDCProduct $edcProduct */
+        $edcProduct = EDCProduct::query()->latest()->first();
+        $edcProductImage = factory(EDCProductImage::class)->create(['product_id' => $edcProduct->id]);
+
+        /** @var EDCProductVariant $edcProductVariant */
+        $edcProductVariant = $edcProduct->variants->first();
+        $productStockFeedPart = $this->createStockFeedPartFromFile(fixture_path('product-stocks-3.xml'));
+        $edcProductVariant->currentData->feedPartStock()->associate($productStockFeedPart);
+        $edcProductVariant->currentData->save();
+
+        $swAPIMock = $this->getMockBuilder(ShopwareAPI::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'createShopwareArticle',
+            ])
+            ->getMock();
+
+        $swAPIMock->expects(static::once())
+            ->method('createShopwareArticle')
+            ->with([
+                'active' => true,
+                'name' => 'Raging Cockstars Großer Penis Ben',
+                'tax' => 19.0,
+                'supplier' => 'Raging Cock Stars',
+                'descriptionLong' => 'Dieser dicke, lange Dildo ist mit besonders realistischen Details versehen und an einem sehr starken Saugnapf befestigt. Dadurch können Sie den Dildo auf jeder gewünschten Oberfläche befestigen und so Vergnügen ganz ohne Hände genießen! Die pinkfarbene Spitze des Dildos ist von Hand gefärbt. Der Dildo ist am Schaft mit einer stimulierenden Textur versehen und hat lebensechte Hoden.',
+                'mainDetail' => [
+                    'active' => false,
+                    'number' => 'ae214',
+                    'ean' => '848518017215',
+                    'prices' => [[
+                        'price' => 62.95,
+                    ]],
+                ],
+                'images' => [
+                    ['link' => route('product-images', [$edcProductImage->identifier])],
+                ],
+            ])
+            ->willReturn(new ShopwareArticleInfo([
+                'data' => [
+                    'id' => 23,
+                    'details' => [
+                        ['number' => 'ae214', 'id' => 24],
+                    ],
+                ],
+            ]));
+
+        $priceCalculatorMock = $this->getMockBuilder(PriceCalculator::class)
+            ->setMethods(['calcPrice'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $priceCalculatorMock->expects(static::atLeastOnce())
+            ->method('calcPrice')
+            ->with($edcProduct, static::isInstanceOf(ProductXML::class))
+            ->will(static::returnCallback(function (EDCProduct $ep, ProductXML $productXML) {
+                return $productXML->getB2CPrice();
+            }));
+
+        // test export
+        $exporter = $this->app->make(\App\SW\Export\ArticleExporter::class, [
+            'shopwareAPI' => $swAPIMock,
+            'priceCalculator' => $priceCalculatorMock,
+        ]);
+        $exporter->export($edcProduct);
+
+        $swArticle = SWArticle::query()->where('edc_product_id', $edcProduct->id)->first();
+        static::assertNotNull($swArticle);
+        static::assertEquals(23, $swArticle->sw_id);
+
+        foreach ($edcProduct->variants as $edcPV) {
+            /** @var SWVariant $swVariant */
+            $swVariant = SWVariant::query()
+                ->where([
+                    'article_id' => $swArticle->id,
+                    'edc_product_variant_id' => $edcPV->id,
+                ])
+                ->first();
+
+            static::assertNotNull($swVariant);
+            static::assertEquals($swVariant->sw_id, 24);
+        }
+    }
+
     protected function createProductFeedPartFromFile(string $filePath): EDCFeedPartProduct
     {
         $rf = $this->storageDirector->createFileFromPath('product-feed-part.xml', $filePath);
@@ -428,6 +522,20 @@ class ArticleExporterTest extends TestCase
         $fullFeed = factory(EDCFeed::class)->create();
 
         $feed = new EDCFeedPartProduct();
+        $feed->fullFeed()->associate($fullFeed);
+        $feed->file()->associate($rf);
+        $feed->save();
+
+        return $feed;
+    }
+
+    protected function createStockFeedPartFromFile(string $filePath): EDCFeedPartStock
+    {
+        $rf = $this->storageDirector->createFileFromPath('product-stock-part.xml', $filePath);
+
+        $fullFeed = factory(EDCFeed::class)->create();
+
+        $feed = new EDCFeedPartStock();
         $feed->fullFeed()->associate($fullFeed);
         $feed->file()->associate($rf);
         $feed->save();

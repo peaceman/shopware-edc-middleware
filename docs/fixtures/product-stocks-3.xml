@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<producten>
+  <product>
+    <productid>7</productid>
+    <variantid>35015</variantid>
+    <productnr>230863</productnr>
+    <ean>4024144230860</ean>
+    <stock>N</stock>
+    <qty>8</qty>
+  </product>
+  <product>
+    <productid>1947</productid>
+    <variantid>1215</variantid>
+    <productnr>02308550000</productnr>
+    <ean>4024144230853</ean>
+    <stock>J</stock>
+    <qty>2</qty>
+  </product>
+</producten>
