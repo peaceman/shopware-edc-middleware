@@ -6,7 +6,9 @@
 namespace App\SW\Export;
 
 use App\EDC\Import\Events\BrandDiscountTouched;
+use App\EDC\Import\Events\ProductTouched;
 use App\SW\Export\Listeners\ExportBrandArticles;
+use App\SW\Export\Listeners\ExportTouchedArticle;
 use App\Utils\RegistersEventListeners;
 use Illuminate\Support\ServiceProvider;
 
@@ -17,6 +19,9 @@ class SWExportServiceProvider extends ServiceProvider
     protected $listen = [
         BrandDiscountTouched::class => [
             ExportBrandArticles::class,
+        ],
+        ProductTouched::class => [
+            ExportTouchedArticle::class,
         ],
     ];
 
