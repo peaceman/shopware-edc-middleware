@@ -163,7 +163,7 @@ class StorageDirector
         $rf->checksum = md5_file($localFilePath);
     }
 
-    protected function addToUploadQueue(ResourceFile $rf): void
+    public function addToUploadQueue(ResourceFile $rf): void
     {
         $this->uploadQueue[] = $rf->id;
     }

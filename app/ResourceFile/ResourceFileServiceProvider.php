@@ -9,6 +9,7 @@ use App\ResourceFile\HouseKeeping\Providers\SoftDeletedResourceFiles;
 use App\ResourceFile\HouseKeeping\Providers\UnusedLocalResourceFileInstances;
 use App\ResourceFile\Jobs\DeleteUnusedLocals;
 use App\ResourceFile\Jobs\ForceDeleteSoftDeleted;
+use App\ResourceFile\Jobs\QueueNonCloudForUpload;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Filesystem\FilesystemManager;
@@ -77,6 +78,12 @@ class ResourceFileServiceProvider extends ServiceProvider
                 $dispatcher->dispatch(new ForceDeleteSoftDeleted());
             })
             ->describe('Remove files and database records of soft deleted resource files');
+
+        $consoleKernel
+            ->command('rf:house-keeping:queue-non-cloud-for-upload', function (Dispatcher $dispatcher) {
+                $dispatcher->dispatch(new QueueNonCloudForUpload());
+            })
+            ->describe('Queue non cloud files for upload');
     }
 
     protected function scheduleJobs()
@@ -87,6 +94,7 @@ class ResourceFileServiceProvider extends ServiceProvider
 
             $schedule->job(DeleteUnusedLocals::class)->daily();
             $schedule->job(ForceDeleteSoftDeleted::class)->daily();
+            $schedule->job(QueueNonCloudForUpload::class)->everyThirtyMinutes();
         });
     }
 

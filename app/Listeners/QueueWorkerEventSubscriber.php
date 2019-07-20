@@ -53,7 +53,7 @@ class QueueWorkerEventSubscriber
         $loggingContext = [
             'pid' => getmypid(),
             'class' => get_class($e),
-            'jobClass' => get_class($this->getJobInstanceFromEvent($e)),
+            'jobClass' => $this->getJobClassFromEvent($e),
         ];
 
         $this->log->debug('JobEvent', $loggingContext);
@@ -68,5 +68,12 @@ class QueueWorkerEventSubscriber
         $command = data_get($payload, 'data.command', false);
 
         return $command ? unserialize($command) : null;
+    }
+
+    protected function getJobClassFromEvent($e): ?string
+    {
+        $job = $this->getJobInstanceFromEvent($e);
+
+        return $job ? get_class($job) : null;
     }
 }

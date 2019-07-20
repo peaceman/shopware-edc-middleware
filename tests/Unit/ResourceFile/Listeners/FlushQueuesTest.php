@@ -1,9 +1,9 @@
 <?php
 /**
- * lel since 2019-07-17
+ * lel since 2019-07-20
  */
 
-namespace Tests\Unit\ResourceFile;
+namespace Tests\Unit\ResourceFile\Listeners;
 
 use App\ResourceFile\StorageDirector;
 use Illuminate\Contracts\Queue\Job;
@@ -11,9 +11,9 @@ use Illuminate\Events\Dispatcher;
 use Illuminate\Queue\Events\JobProcessed;
 use Tests\TestCase;
 
-class JobProcessingSubscriberTest extends TestCase
+class FlushQueuesTest extends TestCase
 {
-    public function testJobProcessingSubscriber()
+    public function testFlushQueues()
     {
         $storageDirector = $this->getMockBuilder(StorageDirector::class)
             ->disableOriginalConstructor()
@@ -23,11 +23,8 @@ class JobProcessingSubscriberTest extends TestCase
         $storageDirector->expects(static::once())
             ->method('flushQueues');
 
-        $eventDispatcher = new Dispatcher();
+        $this->app[StorageDirector::class] = $storageDirector;
 
-        $subscriber = new \App\ResourceFile\JobProcessingSubscriber($storageDirector);
-        $subscriber->subscribe($eventDispatcher);
-
-        $eventDispatcher->dispatch(new JobProcessed('lul', $this->createMock(Job::class)));
+        $this->app[Dispatcher::class]->dispatch(new JobProcessed('lul', $this->createMock(Job::class)));
     }
 }

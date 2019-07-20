@@ -35,7 +35,7 @@ class StorageDirectorTest extends TestCase
         $this->localFS = Storage::fake('local');
         $this->cloudFS = Storage::fake(Storage::getDefaultCloudDriver());
 
-        $this->storageDirector = $this->app->make(StorageDirector::class);
+        $this->storageDirector = $this->app[StorageDirector::class];
     }
 
     public function testNewFileFlow()
