@@ -5,6 +5,8 @@
 
 namespace App\EDC\Import;
 
+use SimpleXMLElement;
+
 class ProductXML
 {
     /** @var \SimpleXMLElement */
@@ -78,5 +80,20 @@ class ProductXML
     public function shouldApplyDiscount(): bool
     {
         return (string)$this->xml->price->discount === 'Y';
+    }
+
+    public function getCategories()
+    {
+        return array_map(
+            function (SimpleXMLElement $category): array {
+                return array_map(
+                    function (SimpleXMLElement $cat) {
+                        return ['id' => (string)$cat->id, 'title' => (string)$cat->title];
+                    },
+                    $category->xpath('cat')
+                );
+            },
+            $this->xml->xpath('categories/category')
+        );
     }
 }
