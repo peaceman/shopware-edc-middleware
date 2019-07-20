@@ -78,6 +78,11 @@ class EDCProduct extends Model
         return $query->where('edc_id', $edcID);
     }
 
+    public function scopeWithBrand(Builder $query, Brand $brand): Builder
+    {
+        return $query->where('brand_id', $brand->id);
+    }
+
     public function asLoggingContext(): array
     {
         return $this->only([

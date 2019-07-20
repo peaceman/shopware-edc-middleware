@@ -10,15 +10,18 @@ use App\EDC\Import\Jobs\FetchFeed;
 use App\EDC\Import\Jobs\ParseDiscountFeed;
 use App\EDC\Import\Jobs\ParseProductFeed;
 use App\EDC\Import\Jobs\ParseProductStockFeed;
+use App\EDC\Import\Listeners\DispatchParseFeed;
 use App\EDCFeed;
+use App\Utils\RegistersEventListeners;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Bus\Dispatcher as JobDispatcher;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Foundation\Console\Kernel;
 use Illuminate\Support\ServiceProvider;
 
 class EDCImportServiceProvider extends ServiceProvider
 {
+    use RegistersEventListeners;
+
     protected $listen = [
         FeedFetched::class => [
             DispatchParseFeed::class,
@@ -92,18 +95,6 @@ class EDCImportServiceProvider extends ServiceProvider
 
             return $dispatchParseFeed;
         });
-    }
-
-    protected function registerEventListeners()
-    {
-        /** @var Dispatcher $eventDispatcher */
-        $eventDispatcher = $this->app[Dispatcher::class];
-
-        foreach ($this->listen as $event => $listeners) {
-            foreach (array_unique($listeners) as $listener) {
-                $eventDispatcher->listen($event, $listener);
-            }
-        }
     }
 
     protected function registerProductImageLoader(): void

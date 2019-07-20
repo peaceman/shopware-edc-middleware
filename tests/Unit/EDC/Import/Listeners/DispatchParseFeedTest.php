@@ -3,14 +3,14 @@
  * lel since 2019-07-03
  */
 
-namespace Tests\Unit\EDC\Import;
+namespace Tests\Unit\EDC\Import\Listeners;
 
-use App\EDC\Import\DispatchParseFeed;
 use App\EDC\Import\Events\FeedFetched;
 use App\EDC\Import\Exceptions\UnknownFeedType;
 use App\EDC\Import\Jobs\ParseDiscountFeed;
 use App\EDC\Import\Jobs\ParseProductFeed;
 use App\EDC\Import\Jobs\ParseProductStockFeed;
+use App\EDC\Import\Listeners\DispatchParseFeed;
 use App\EDCFeed;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
@@ -58,8 +58,8 @@ class DispatchParseFeedTest extends TestCase
     {
         $edcFeed = new EDCFeed(['type' => 'invalid type']);
 
-        /** @var DispatchParseFeed $listener */
-        $listener = $this->app[DispatchParseFeed::class];
+        /** @var \App\EDC\Import\Listeners\DispatchParseFeed $listener */
+        $listener = $this->app[\App\EDC\Import\Listeners\DispatchParseFeed::class];
 
         try {
             $listener->handle(new FeedFetched($edcFeed));

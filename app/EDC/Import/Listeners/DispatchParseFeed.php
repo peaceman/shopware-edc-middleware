@@ -3,9 +3,11 @@
  * lel since 2019-07-03
  */
 
-namespace App\EDC\Import;
+namespace App\EDC\Import\Listeners;
 
 use App\EDC\Import\Events\FeedFetched;
+use App\EDC\Import\Exceptions;
+use App\EDC\Import\Jobs;
 use App\EDCFeed;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Psr\Log\LoggerInterface;
