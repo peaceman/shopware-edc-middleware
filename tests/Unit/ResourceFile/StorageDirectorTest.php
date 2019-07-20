@@ -150,4 +150,15 @@ class StorageDirectorTest extends TestCase
         static::assertFalse($this->localFS->exists($rf->path));
         static::assertNull($rf->localInstance);
     }
+
+    public function testFlushQueuesDispatchesInChunks()
+    {
+        $rfs = factory(ResourceFile::class, 50)->create();
+        foreach ($rfs as $rf)
+            $this->storageDirector->addToUploadQueue($rf);
+
+        Queue::fake();
+        $this->storageDirector->flushQueues();
+        Queue::assertPushed(UploadToCloud::class, 5);
+    }
 }

@@ -196,22 +196,26 @@ class StorageDirector
     {
         $queue = array_unique($this->uploadQueue);
         if (empty($queue)) return;
-
-        $job = new UploadToCloud($queue);
         $this->uploadQueue = [];
 
-        $this->jobDispatcher->dispatch($job);
+        $chunkedQueue = array_chunk($queue, 10, false);
+        foreach ($chunkedQueue as $chunk) {
+            $job = new UploadToCloud($chunk);
+            $this->jobDispatcher->dispatch($job);
+        }
     }
 
     protected function flushUpdateLastAccessTimeQueue(): void
     {
         $queue = array_unique($this->updateLastAccessTimeQueue);
         if (empty($queue)) return;
-
-        $job = new UpdateLastAccessTime($queue);
         $this->updateLastAccessTimeQueue = [];
 
-        $this->jobDispatcher->dispatch($job);
+        $chunkedQueue = array_chunk($queue, 10, false);
+        foreach ($chunkedQueue as $chunk) {
+            $job = new UpdateLastAccessTime($chunk);
+            $this->jobDispatcher->dispatch($job);
+        }
     }
 
     public function uploadToCloud(ResourceFile $rf): void
