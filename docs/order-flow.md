@@ -19,7 +19,7 @@
             1. Erhaltene Daten werden ignoriert
         
 ## EDC OrderExporter
-1. Bestellungen mit Transferstatus OPEN werden an EDC exportiert
+1. Bestellungen mit EDC Transferstatus OPEN werden an EDC exportiert
     1. Export ist erfolgreich
         1. EDC Transferstatus wird auf WAITING gesetzt
         1. EDC OrderNumber wird gespeichert
