@@ -178,7 +178,7 @@ return [
 
         App\ResourceFile\ResourceFileServiceProvider::class,
         App\EDC\Import\EDCImportServiceProvider::class,
-        App\SW\Export\SWExportServiceProvider::class,
+        App\SW\SWServiceProvider::class,
     ],
 
     /*

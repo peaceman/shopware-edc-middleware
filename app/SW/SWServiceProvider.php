@@ -3,20 +3,20 @@
  * lel since 2019-07-20
  */
 
-namespace App\SW\Export;
+namespace App\SW;
 
 use App\EDC\Import\Events\BrandDiscountTouched;
 use App\EDC\Import\Events\ProductTouched;
 use App\SW\Export\Commands\ExportArticles;
 use App\SW\Export\Listeners\ExportBrandArticles;
 use App\SW\Export\Listeners\ExportTouchedArticle;
-use App\SW\ShopwareAPI;
+use App\SW\Import\OrderProviders\OpenOrderProvider;
 use App\Utils\RegistersEventListeners;
 use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
 
-class SWExportServiceProvider extends ServiceProvider
+class SWServiceProvider extends ServiceProvider
 {
     use RegistersEventListeners;
 
@@ -38,6 +38,7 @@ class SWExportServiceProvider extends ServiceProvider
     {
         $this->registerCommands();
         $this->registerShopwareAPI();
+        $this->registerOpenOrderProvider();
     }
 
     protected function registerCommands()
@@ -57,6 +58,13 @@ class SWExportServiceProvider extends ServiceProvider
 
             $api = new ShopwareAPI($this->app[LoggerInterface::class], $httpClient);
             return $api;
+        });
+    }
+
+    protected function registerOpenOrderProvider(): void
+    {
+        $this->app->resolving(OpenOrderProvider::class, function (OpenOrderProvider $provider): void {
+            $provider->setRequirements(config('shopware.order.requirements'));
         });
     }
 }
