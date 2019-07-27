@@ -65,5 +65,4 @@ class OpenOrderProviderTest extends TestCase
 
         static::assertEqualsCanonicalizing(['20002', '20003', '20004'], $orderNumbers);
     }
-
 }
