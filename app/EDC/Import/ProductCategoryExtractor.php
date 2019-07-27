@@ -31,9 +31,10 @@ class ProductCategoryExtractor
 
         $latestProductFeed = EDCFeed::withType(EDCFeed::TYPE_PRODUCTS)->latest()->first();
 
-//        $query = EDCProduct::query();
-        $query = EDCProduct::query()
-            ->whereHas('currentData.feedPartProduct', function (Builder $q) use ($latestProductFeed) {
+        $query = EDCProduct::query();
+
+        if ($latestProductFeed)
+            $query->whereHas('currentData.feedPartProduct', function (Builder $q) use ($latestProductFeed) {
                 $q->where('full_feed_id', $latestProductFeed->id);
             });
 
