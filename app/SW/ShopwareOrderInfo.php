@@ -31,4 +31,51 @@ class ShopwareOrderInfo
     {
         return $this->data;
     }
+
+    public function getStreet(): string
+    {
+        return (string)$this->get('shipping.street');
+    }
+
+    public function getFirstName(): string
+    {
+        return (string)$this->get('shipping.firstName');
+    }
+
+    public function getLastName(): string
+    {
+        return (string)$this->get('shipping.lastName');
+    }
+
+    public function getZIPCode(): string
+    {
+        return (string)$this->get('shipping.zipCode');
+    }
+
+    public function getCity(): string
+    {
+        return (string)$this->get('shipping.city');
+    }
+
+    public function getCountry(): string
+    {
+        return (string)$this->get('shipping.country.iso');
+    }
+
+    public function getArticleNumbersWithQuantity(): array
+    {
+        return collect($this->get('details'))
+            ->map(function (array $detail) {
+                return [
+                    'articleNumber' => $detail['articleNumber'],
+                    'quantity' => $detail['quantity'],
+                ];
+            })
+            ->all();
+    }
+
+    protected function get(string $key, $default = null)
+    {
+        return data_get($this->data, $key, $default);
+    }
 }

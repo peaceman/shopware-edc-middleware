@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orderdetails>
+  <customerdetails>
+    <email>testaccount@edc-internet.nl</email>
+    <apikey>7651320RK8RD972HR966Z40752DDKZKK</apikey>
+    <output>advanced</output>
+  </customerdetails>
+  <receiver>
+    <name>Maxi Mustermann</name>
+    <street>Kellergasse</street>
+    <house_nr>77</house_nr>
+    <house_nr_ext>/adsf</house_nr_ext>
+    <postalcode>34343</postalcode>
+    <city>Kiel</city>
+    <country>3</country>
+    <own_ordernumber>20003</own_ordernumber>
+  </receiver>
+  <products>
+    <artnr>90389615640343</artnr>
+    <artnr>90389615640343</artnr>
+    <artnr>90389615640343</artnr>
+    <artnr>639802-50H43001747</artnr>
+    <artnr>test</artnr>
+  </products>
+</orderdetails>

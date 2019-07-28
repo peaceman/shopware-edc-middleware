@@ -6,6 +6,7 @@
 namespace App\EDC;
 
 use App\EDC\Export\Commands\ExportOrders;
+use App\EDC\Export\OrderXMLGenerator;
 use App\EDC\Import\Events\FeedFetched;
 use App\EDC\Import\Jobs\FetchFeed;
 use App\EDC\Import\Jobs\ParseDiscountFeed;
@@ -48,6 +49,7 @@ class EDCServiceProvider extends ServiceProvider
     {
         $this->registerParseFeedJobs();
         $this->registerProductImageLoader();
+        $this->registerOrderXMLGenerator();
 
         $this->registerCommands();
     }
@@ -110,6 +112,15 @@ class EDCServiceProvider extends ServiceProvider
             $loader->setBaseURI(config('edc.imageBaseURI'));
 
             return $loader;
+        });
+    }
+
+    protected function registerOrderXMLGenerator(): void
+    {
+        $this->app->resolving(OrderXMLGenerator::class, function (OrderXMLGenerator $xmlGen): void {
+            $xmlGen->setAPIEmail(config('edc.api.email'));
+            $xmlGen->setAPIKey(config('edc.api.key'));
+            $xmlGen->setCountryMap(config('edc.countryMap'));
         });
     }
 }
