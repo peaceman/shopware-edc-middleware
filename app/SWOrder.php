@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read SWOrderDetail[] $details
  * @property-read EDCOrderExport[] $exports
  * @property-read EDCOrderUpdate[] $updates
+ * @property-read EDCOrderExport[] $orderExports
  *
  * @method static Builder withOrderNumber($orderNumber)
  */
@@ -63,6 +64,11 @@ class SWOrder extends Model
     public function updates(): HasMany
     {
         return $this->hasMany(EDCOrderUpdate::class, 'order_id', 'id');
+    }
+
+    public function orderExports(): HasMany
+    {
+        return $this->hasMany(EDCOrderExport::class, 'order_id', 'id');
     }
 
     public function asLoggingContext(): array

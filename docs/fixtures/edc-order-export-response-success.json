@@ -1,0 +1,31 @@
+{
+  "result": "OK",
+  "ordernumber": "DR19072814488521",
+  "own_ordernumber": "foo-bar",
+  "total_incl_vat": "21.83",
+  "vatlow": "0.00",
+  "vathigh": "3.79",
+  "shippingcosts_excl_vat": "4.09",
+  "subtotal_excl_vat": "13.95",
+  "used_prepaid": "N",
+  "products": [
+    {
+      "artnr": "1779-BLACK-S",
+      "stock": "Y",
+      "price": "4.65",
+      "vat": "0.98",
+      "vatclass": "1.21",
+      "quantity": 1,
+      "weeknr": ""
+    },
+    {
+      "artnr": "1779-WHITE-S",
+      "stock": "Y",
+      "price": "4.65",
+      "vat": "1.95",
+      "vatclass": "1.21",
+      "quantity": 2,
+      "weeknr": ""
+    }
+  ]
+}

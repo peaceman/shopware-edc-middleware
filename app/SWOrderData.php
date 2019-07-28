@@ -5,6 +5,7 @@
 
 namespace App;
 
+use App\SW\ShopwareOrderInfo;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -51,5 +52,10 @@ class SWOrderData extends Model
             'sw_transfer_status',
             'edc_transfer_status',
         ]);
+    }
+
+    public function asShopwareOrderInfo(): ShopwareOrderInfo
+    {
+        return new ShopwareOrderInfo($this->orderDetail->data);
     }
 }
