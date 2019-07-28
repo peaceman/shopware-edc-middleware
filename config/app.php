@@ -177,7 +177,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         App\ResourceFile\ResourceFileServiceProvider::class,
-        App\EDC\Import\EDCImportServiceProvider::class,
+        App\EDC\EDCServiceProvider::class,
         App\SW\SWServiceProvider::class,
     ],
 

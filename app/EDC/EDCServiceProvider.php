@@ -3,14 +3,17 @@
  * lel since 2019-07-02
  */
 
-namespace App\EDC\Import;
+namespace App\EDC;
 
+use App\EDC\Export\Commands\ExportOrders;
 use App\EDC\Import\Events\FeedFetched;
 use App\EDC\Import\Jobs\FetchFeed;
 use App\EDC\Import\Jobs\ParseDiscountFeed;
 use App\EDC\Import\Jobs\ParseProductFeed;
 use App\EDC\Import\Jobs\ParseProductStockFeed;
 use App\EDC\Import\Listeners\DispatchParseFeed;
+use App\EDC\Import\ProductCategoryExtractor;
+use App\EDC\Import\ProductImageLoader;
 use App\EDCFeed;
 use App\Utils\RegistersEventListeners;
 use Illuminate\Console\Scheduling\Schedule;
@@ -18,7 +21,7 @@ use Illuminate\Contracts\Bus\Dispatcher as JobDispatcher;
 use Illuminate\Foundation\Console\Kernel;
 use Illuminate\Support\ServiceProvider;
 
-class EDCImportServiceProvider extends ServiceProvider
+class EDCServiceProvider extends ServiceProvider
 {
     use RegistersEventListeners;
 
@@ -72,6 +75,10 @@ class EDCImportServiceProvider extends ServiceProvider
                     fwrite(STDOUT, json_encode($categories, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
                 }
             );
+
+        $this->commands([
+            ExportOrders::class,
+        ]);
     }
 
     protected function scheduleJobs()
