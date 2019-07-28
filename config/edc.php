@@ -9,6 +9,7 @@ return [
         EDCFeed::TYPE_PRODUCT_STOCKS => env('EDC_FEED_PRODUCT_STOCKS', 'https://plx-fill.me'),
     ],
     'imageBaseURI' => env('EDC_IMAGE_BASE_URI', 'https://plx-fill.me/500'),
+    'orderExportURI' => env('EDC_ORDER_EXPORT_URI', 'https://www.erotikgrosshandel.de/ao/'),
     'api' => [
         'email' => env('EDC_API_EMAIL', 'testaccount@edc-internet.nl'),
         'key' => env('EDC_API_KEY', '7651320RK8RD972HR966Z40752DDKZKK'),

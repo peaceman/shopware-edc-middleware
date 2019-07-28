@@ -31,6 +31,16 @@ class EDCOrderExportInfo
         return $this->get('ordernumber');
     }
 
+    public function getMessage(): string
+    {
+        return $this->get('message');
+    }
+
+    public function getErrorCode(): string
+    {
+        return $this->get('errorcode');
+    }
+
     protected function get(string $key, $default = null)
     {
         return data_get($this->data, $key, $default);

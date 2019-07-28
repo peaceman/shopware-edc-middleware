@@ -50,6 +50,7 @@ class EDCServiceProvider extends ServiceProvider
         $this->registerParseFeedJobs();
         $this->registerProductImageLoader();
         $this->registerOrderXMLGenerator();
+        $this->registerEDCAPI();
 
         $this->registerCommands();
     }
@@ -121,6 +122,13 @@ class EDCServiceProvider extends ServiceProvider
             $xmlGen->setAPIEmail(config('edc.api.email'));
             $xmlGen->setAPIKey(config('edc.api.key'));
             $xmlGen->setCountryMap(config('edc.countryMap'));
+        });
+    }
+
+    protected function registerEDCAPI(): void
+    {
+        $this->app->resolving(EDCAPI::class, function (EDCAPI $edcAPI): void {
+            $edcAPI->setOrderExportURI(config('edc.orderExportURI'));
         });
     }
 }
