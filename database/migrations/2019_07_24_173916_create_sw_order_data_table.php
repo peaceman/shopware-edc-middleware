@@ -32,7 +32,7 @@ class CreateSwOrderDataTable extends Migration
             $table->string('edc_transfer_status');
             $table->string('edc_order_number')->nullable();
             $table->string('tracking_number')->nullable();
-            $table->timestamp('current_until');
+            $table->timestamp('current_until')->nullable();
             $table->timestamps();
 
             $table->foreign('order_id', 'soda_so_fk')

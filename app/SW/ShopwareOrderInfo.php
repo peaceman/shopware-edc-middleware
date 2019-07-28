@@ -26,4 +26,9 @@ class ShopwareOrderInfo
             'orderNumber' => $this->data['number'] ?? null,
         ];
     }
+
+    public function getData(): array
+    {
+        return $this->data;
+    }
 }

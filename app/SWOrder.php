@@ -7,6 +7,7 @@ namespace App;
 
 use App\Utils\RetiringRelation;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -20,10 +21,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *
+ * @property-read SWOrderData $currentData
  * @property-read SWOrderData[] $data
  * @property-read SWOrderDetail[] $details
  * @property-read EDCOrderExport[] $exports
  * @property-read EDCOrderUpdate[] $updates
+ *
+ * @method static Builder withOrderNumber($orderNumber)
  */
 class SWOrder extends Model
 {
@@ -64,5 +68,10 @@ class SWOrder extends Model
     public function asLoggingContext(): array
     {
         return $this->only(['id', 'sw_order_number']);
+    }
+
+    public function scopeWithOrderNumber(Builder $query, $orderNumber): Builder
+    {
+        return $query->where('sw_order_number', '=', $orderNumber);
     }
 }
