@@ -8,5 +8,11 @@
 * edc
   * `php artisan edc:fetch-feed`
   * `php artisan edc:extract-categories`
+  * `php artisan edc:export-orders`
 * sw
   * `php artisan sw:export-articles`
+  * `php artisan sw:fetch-orders`
+  * `php artisan sw:update-orders`
+
+## order update endpoint for edc
+`/order-update?auth=$configuredAuthToken`
