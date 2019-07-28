@@ -40,7 +40,7 @@ class EDCServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        if ($this->app->runningInConsole()) $this->scheduleJobs();
+        $this->schedule();
 
         $this->registerEventListeners();
     }
@@ -84,8 +84,10 @@ class EDCServiceProvider extends ServiceProvider
         ]);
     }
 
-    protected function scheduleJobs()
+    protected function schedule()
     {
+        if (!$this->app->runningInConsole()) return;
+
         $this->app->booted(function () {
             /** @var Schedule $schedule */
             $schedule = $this->app[Schedule::class];
@@ -93,6 +95,8 @@ class EDCServiceProvider extends ServiceProvider
             $schedule->job(new FetchFeed(EDCFeed::TYPE_DISCOUNTS))->dailyAt('04:23');
             $schedule->job(new FetchFeed(EDCFeed::TYPE_PRODUCTS))->cron('23 5 */3 * *');
             $schedule->job(new FetchFeed(EDCFeed::TYPE_PRODUCT_STOCKS))->hourlyAt(5);
+
+            $schedule->command(ExportOrders::class)->everyMinute();
         });
     }
 

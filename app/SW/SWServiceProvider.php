@@ -8,6 +8,7 @@ namespace App\SW;
 use App\EDC\Import\Events\BrandDiscountTouched;
 use App\EDC\Import\Events\ProductTouched;
 use App\SW\Export\Commands\ExportArticles;
+use App\SW\Export\Commands\UpdateOrders;
 use App\SW\Export\Listeners\ExportBrandArticles;
 use App\SW\Export\Listeners\ExportTouchedArticle;
 use App\SW\Import\Commands\FetchOrders;
@@ -49,6 +50,7 @@ class SWServiceProvider extends ServiceProvider
         $this->commands([
             ExportArticles::class,
             FetchOrders::class,
+            UpdateOrders::class,
         ]);
     }
 
@@ -76,8 +78,12 @@ class SWServiceProvider extends ServiceProvider
     {
         if (!$this->app->runningInConsole()) return;
 
-        /** @var Schedule $schedule */
-        $schedule = $this->app[Schedule::class];
-        $schedule->command(FetchOrders::class)->everyMinute();
+        $this->app->booted(function () {
+            /** @var Schedule $schedule */
+            $schedule = $this->app[Schedule::class];
+
+            $schedule->command(FetchOrders::class)->everyMinute();
+            $schedule->command(UpdateOrders::class)->everyMinute();
+        });
     }
 }
