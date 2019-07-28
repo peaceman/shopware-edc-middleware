@@ -10,9 +10,11 @@ use App\EDC\Import\Events\ProductTouched;
 use App\SW\Export\Commands\ExportArticles;
 use App\SW\Export\Listeners\ExportBrandArticles;
 use App\SW\Export\Listeners\ExportTouchedArticle;
+use App\SW\Import\Commands\FetchOrders;
 use App\SW\Import\OrderProviders\OpenOrderProvider;
 use App\Utils\RegistersEventListeners;
 use GuzzleHttp\Client;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
 
@@ -32,6 +34,7 @@ class SWServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerEventListeners();
+        $this->scheduleCommands();
     }
 
     public function register()
@@ -45,6 +48,7 @@ class SWServiceProvider extends ServiceProvider
     {
         $this->commands([
             ExportArticles::class,
+            FetchOrders::class,
         ]);
     }
 
@@ -66,5 +70,14 @@ class SWServiceProvider extends ServiceProvider
         $this->app->resolving(OpenOrderProvider::class, function (OpenOrderProvider $provider): void {
             $provider->setRequirements(config('shopware.order.requirements'));
         });
+    }
+
+    protected function scheduleCommands(): void
+    {
+        if (!$this->app->runningInConsole()) return;
+
+        /** @var Schedule $schedule */
+        $schedule = $this->app[Schedule::class];
+        $schedule->command(FetchOrders::class)->everyMinute();
     }
 }

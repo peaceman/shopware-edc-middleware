@@ -19,4 +19,11 @@ class ShopwareOrderInfo
     {
         return (string)$this->data['number'];
     }
+
+    public function asLoggingContext(): array
+    {
+        return [
+            'orderNumber' => $this->data['number'] ?? null,
+        ];
+    }
 }
