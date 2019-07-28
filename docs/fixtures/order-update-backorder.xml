@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<order>
+  <ordernumber>WS1192929</ordernumber>
+  <own_ordernumber>R9393JKF93</own_ordernumber>
+  <new_ordernumber>WS1192929-1</new_ordernumber>
+  <products>
+    <artnr>93929293|1</artnr>
+    <artnr>83929294|2</artnr>
+    <artnr>73929295|5</artnr>
+  </products>
+  <status>backorder</status>
+</order>

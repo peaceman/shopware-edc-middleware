@@ -27,8 +27,7 @@ use Illuminate\Support\Collection;
  * @property-read SWOrderDetail[]|Collection $details
  * @property-read EDCOrderExport[]|Collection $exports
  * @property-read EDCOrderUpdate[]|Collection $updates
- * @property-read EDCOrderExport[]|Collection $orderExports
- * @property-read EDCOrderExport[]|Collection $failedOrderExports
+ * @property-read EDCOrderExport[]|Collection $failedExports
  *
  * @method static Builder withOrderNumber($orderNumber)
  */
@@ -63,20 +62,15 @@ class SWOrder extends Model
         return $this->hasMany(EDCOrderExport::class, 'order_id', 'id');
     }
 
-    public function updates(): HasMany
-    {
-        return $this->hasMany(EDCOrderUpdate::class, 'order_id', 'id');
-    }
-
-    public function orderExports(): HasMany
-    {
-        return $this->hasMany(EDCOrderExport::class, 'order_id', 'id');
-    }
-
-    public function failedOrderExports(): HasMany
+    public function failedExports(): HasMany
     {
         return $this->hasMany(EDCOrderExport::class, 'order_id', 'id')
             ->where('status', EDCExportStatus::FAIL);
+    }
+
+    public function updates(): HasMany
+    {
+        return $this->hasMany(EDCOrderUpdate::class, 'order_id', 'id');
     }
 
     public function asLoggingContext(): array

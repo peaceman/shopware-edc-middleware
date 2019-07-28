@@ -97,9 +97,9 @@ class OrderUpdater
 
     protected function genEDCErrors(SWOrder $order): ?array
     {
-        if ($order->failedOrderExports->count() === 0) return null;
+        if ($order->failedExports->count() === 0) return null;
 
-        $errors = $order->failedOrderExports
+        $errors = $order->failedExports
             ->sortByDesc('created_at')
             ->map(function (EDCOrderExport $orderExport): string {
                 $exportInfo = $orderExport->asExportInfo();

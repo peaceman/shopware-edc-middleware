@@ -73,8 +73,8 @@ class OrderExporterTest extends TestCase
         $swOrder->refresh();
 
         // order export
-        static::assertEquals(1, $swOrder->orderExports()->count());
-        $orderExport = $swOrder->orderExports()->latest()->first();
+        static::assertEquals(1, $swOrder->exports()->count());
+        $orderExport = $swOrder->exports()->latest()->first();
         static::assertNotNull($orderExport);
         static::assertEquals($orderXML, $orderExport->sent);
         static::assertEquals($edcOrderExportResponse, $orderExport->received);
@@ -132,8 +132,8 @@ class OrderExporterTest extends TestCase
         $swOrder->refresh();
 
         // order export
-        static::assertEquals(1, $swOrder->orderExports()->count());
-        $orderExport = $swOrder->orderExports()->latest()->first();
+        static::assertEquals(1, $swOrder->exports()->count());
+        $orderExport = $swOrder->exports()->latest()->first();
         static::assertNotNull($orderExport);
         static::assertEquals($orderXML, $orderExport->sent);
         static::assertEquals($edcOrderExportResponse, $orderExport->received);
@@ -195,7 +195,7 @@ class OrderExporterTest extends TestCase
         $swOrder->refresh();
 
         // order export
-        static::assertEquals(0, $swOrder->orderExports()->count());
+        static::assertEquals(0, $swOrder->exports()->count());
 
         // order data
         $orderData = $swOrder->currentData;

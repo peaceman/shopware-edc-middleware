@@ -26,14 +26,14 @@ class OrderUpdaterTest extends TestCase
     {
         // prepare order
         $swOrder = $this->createOrder();
-        $swOrder->orderExports()->create([
+        $swOrder->exports()->create([
             'status' => EDCExportStatus::FAIL,
             'received' => ['result' => 'FAIL', 'message' => 'error msg one', 'errorcode' => '23'],
             'sent' => 'lul',
             'created_at' => Carbon::parse('1980-05-23T23:05:42+00:00'),
         ]);
 
-        $swOrder->orderExports()->create([
+        $swOrder->exports()->create([
             'status' => EDCExportStatus::FAIL,
             'received' => ['result' => 'FAIL', 'message' => 'error msg two', 'errorcode' => '23'],
             'sent' => 'lul',
