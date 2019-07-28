@@ -13,6 +13,3 @@
 
 Route::get('product-images/{identifier}', 'ProductImageController')
     ->name('product-images');
-
-Route::post('order-update', 'OrderUpdateController')
-    ->name('order-update');
