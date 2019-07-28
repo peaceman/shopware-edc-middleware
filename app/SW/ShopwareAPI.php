@@ -201,4 +201,28 @@ class ShopwareAPI
             ],
         ]);
     }
+
+    public function updateOrder(string $orderNumber, array $data): void
+    {
+        $loggingContext = [
+            'orderNumber' => $orderNumber,
+            'data' => $data,
+        ];
+        $this->logger->info(__METHOD__, $loggingContext);
+
+        try {
+            $this->httpClient->put("/api/orders{$orderNumber}", [
+                'query' => ['useNumberAsId' => 1],
+                'json' => $data,
+            ]);
+        } catch (RequestException $e) {
+            $this->logger->error(__METHOD__ . ' failed to update order', array_merge($loggingContext, [
+                'responseHeaders' => $e->hasResponse() ? $e->getResponse()->getHeaders() : null,
+            ]));
+
+            if ($e->hasResponse()) $this->logger->error((string)$e->getResponse()->getBody());
+
+            throw $e;
+        }
+    }
 }

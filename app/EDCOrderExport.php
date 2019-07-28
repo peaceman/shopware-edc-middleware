@@ -5,6 +5,7 @@
 
 namespace App;
 
+use App\EDC\EDCOrderExportInfo;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -40,5 +41,10 @@ class EDCOrderExport extends Model
     public function asLoggingContext(): array
     {
         return $this->only(['id', 'order_id', 'status']);
+    }
+
+    public function asExportInfo(): EDCOrderExportInfo
+    {
+        return new EDCOrderExportInfo($this->received);
     }
 }

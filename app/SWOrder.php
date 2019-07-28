@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
 
 /**
  * Class SWOrder
@@ -22,11 +23,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property Carbon $updated_at
  *
  * @property-read SWOrderData $currentData
- * @property-read SWOrderData[] $data
- * @property-read SWOrderDetail[] $details
- * @property-read EDCOrderExport[] $exports
- * @property-read EDCOrderUpdate[] $updates
- * @property-read EDCOrderExport[] $orderExports
+ * @property-read SWOrderData[]|Collection $data
+ * @property-read SWOrderDetail[]|Collection $details
+ * @property-read EDCOrderExport[]|Collection $exports
+ * @property-read EDCOrderUpdate[]|Collection $updates
+ * @property-read EDCOrderExport[]|Collection $orderExports
+ * @property-read EDCOrderExport[]|Collection $failedOrderExports
  *
  * @method static Builder withOrderNumber($orderNumber)
  */
@@ -69,6 +71,12 @@ class SWOrder extends Model
     public function orderExports(): HasMany
     {
         return $this->hasMany(EDCOrderExport::class, 'order_id', 'id');
+    }
+
+    public function failedOrderExports(): HasMany
+    {
+        return $this->hasMany(EDCOrderExport::class, 'order_id', 'id')
+            ->where('status', EDCExportStatus::FAIL);
     }
 
     public function asLoggingContext(): array

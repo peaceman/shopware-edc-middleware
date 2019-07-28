@@ -23,4 +23,12 @@ return [
             ],
         ],
     ],
+    'status' => [
+        'order' => [
+            'open' => env('SHOPWARE_ORDER_STATUS_OPEN'),
+            'inProcess' => env('SHOPWARE_ORDER_STATUS_IN_PROCESS'),
+            'completed' => env('SHOPWARE_ORDER_STATUS_COMPLETED'),
+            'clarificationRequired' => env('SHOPWARE_ORDER_STATUS_CLARIFICATION_REQUIRED'),
+        ],
+    ],
 ];
