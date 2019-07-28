@@ -12,10 +12,23 @@ use App\EDCTransferStatus;
 use App\SWOrder;
 use App\SWTransferStatus;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Psr\Log\LoggerInterface;
 
 class OrderUpdateController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function (Request $request, callable $next) {
+            $authToken = $request->get('auth');
+
+            if ($authToken !== config('edc.orderUpdateAuthToken'))
+                return response()->make('Unauthorized', Response::HTTP_UNAUTHORIZED);
+
+            return $next($request);
+        });
+    }
+
     public function __invoke(LoggerInterface $logger, Request $request)
     {
         $this->validate($request, [

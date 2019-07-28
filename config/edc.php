@@ -10,6 +10,7 @@ return [
     ],
     'imageBaseURI' => env('EDC_IMAGE_BASE_URI', 'https://plx-fill.me/500'),
     'orderExportURI' => env('EDC_ORDER_EXPORT_URI', 'https://www.erotikgrosshandel.de/ao/'),
+    'orderUpdateAuthToken' => env('EDC_ORDER_UPDATE_AUTH_TOKEN', 'this should be random'),
     'api' => [
         'email' => env('EDC_API_EMAIL', 'testaccount@edc-internet.nl'),
         'key' => env('EDC_API_KEY', '7651320RK8RD972HR966Z40752DDKZKK'),

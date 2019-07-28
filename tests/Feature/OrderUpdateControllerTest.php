@@ -22,12 +22,18 @@ class OrderUpdateControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+    }
 
-        $this->withoutExceptionHandling();
+    public function testUnauthenticated()
+    {
+        $response = $this->post(route('order-update', ['data' => '']));
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testShippedOrder()
     {
+        $this->withoutExceptionHandling();
+
         // prepare order
         $swOrder = new SWOrder(['sw_order_number' => '9393920209']);
         $swOrder->save();
@@ -43,7 +49,10 @@ class OrderUpdateControllerTest extends TestCase
 
         // request
         $orderShippedData = fixture_content('order-update-shipped.xml');
-        $response = $this->post(route('order-update', ['data' => $orderShippedData]));
+        $response = $this->post(
+            route('order-update', ['auth' => config('edc.orderUpdateAuthToken')]),
+            ['data' => $orderShippedData]
+        );
 
         // assertions
         $response->assertStatus(Response::HTTP_NO_CONTENT);
@@ -62,6 +71,8 @@ class OrderUpdateControllerTest extends TestCase
 
     public function testBackOrder()
     {
+        $this->withoutExceptionHandling();
+
         // prepare order
         $swOrder = new SWOrder(['sw_order_number' => 'R9393JKF93']);
         $swOrder->save();
@@ -77,7 +88,10 @@ class OrderUpdateControllerTest extends TestCase
 
         // request
         $backorderData = fixture_content('order-update-backorder.xml');
-        $response = $this->post(route('order-update', ['data' => $backorderData]));
+        $response = $this->post(
+            route('order-update', ['auth' => config('edc.orderUpdateAuthToken')]),
+            ['data' => $backorderData]
+        );
 
         // assertions
         $response->assertStatus(Response::HTTP_NO_CONTENT);
