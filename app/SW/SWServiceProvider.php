@@ -73,7 +73,7 @@ class SWServiceProvider extends ServiceProvider
     protected function registerOpenOrderProvider(): void
     {
         $this->app->resolving(OpenOrderProvider::class, function (OpenOrderProvider $provider): void {
-            $provider->setRequirements(config('shopware.order.requirements'));
+            $provider->setRequirements(config('shopware.order.open.requirements'));
         });
     }
 
