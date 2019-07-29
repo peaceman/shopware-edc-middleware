@@ -31,4 +31,5 @@ return [
             'clarificationRequired' => env('SHOPWARE_ORDER_STATUS_CLARIFICATION_REQUIRED'),
         ],
     ],
+    'categoryMappingFile' => env('SHOPWARE_CATEGORY_MAPPING_FILE', 'cat-mapping.csv'),
 ];

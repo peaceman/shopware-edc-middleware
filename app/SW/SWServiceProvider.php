@@ -7,6 +7,7 @@ namespace App\SW;
 
 use App\EDC\Import\Events\BrandDiscountTouched;
 use App\EDC\Import\Events\ProductTouched;
+use App\SW\Export\CategoryMapper;
 use App\SW\Export\Commands\ExportArticles;
 use App\SW\Export\Commands\UpdateOrders;
 use App\SW\Export\Listeners\ExportBrandArticles;
@@ -16,6 +17,7 @@ use App\SW\Import\OrderProviders\OpenOrderProvider;
 use App\Utils\RegistersEventListeners;
 use GuzzleHttp\Client;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
 
@@ -43,6 +45,7 @@ class SWServiceProvider extends ServiceProvider
         $this->registerCommands();
         $this->registerShopwareAPI();
         $this->registerOpenOrderProvider();
+        $this->registerCategoryMapper();
     }
 
     protected function registerCommands()
@@ -71,6 +74,17 @@ class SWServiceProvider extends ServiceProvider
     {
         $this->app->resolving(OpenOrderProvider::class, function (OpenOrderProvider $provider): void {
             $provider->setRequirements(config('shopware.order.requirements'));
+        });
+    }
+
+    protected function registerCategoryMapper(): void
+    {
+        $this->app->singleton(CategoryMapper::class, function (): CategoryMapper {
+            /** @var FilesystemManager $fsm */
+            $fsm = $this->app[FilesystemManager::class];
+
+            $filename = config('shopware.categoryMappingFile');
+            return new CategoryMapper($fsm->disk(), $filename);
         });
     }
 
