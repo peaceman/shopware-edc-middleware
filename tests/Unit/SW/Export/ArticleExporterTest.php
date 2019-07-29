@@ -16,6 +16,7 @@ use App\EDCProduct;
 use App\EDCProductImage;
 use App\EDCProductVariant;
 use App\ResourceFile\StorageDirector;
+use App\SW\Export\CategoryMapper;
 use App\SW\Export\PriceCalculator;
 use App\SW\ShopwareAPI;
 use App\SWArticle;
@@ -57,6 +58,12 @@ class ArticleExporterTest extends TestCase
         $edcProduct = EDCProduct::query()->latest()->first();
         $edcProductImage = factory(EDCProductImage::class)->create(['product_id' => $edcProduct->id]);
 
+        $categoryMapper = $this->createMock(CategoryMapper::class);
+        $categoryMapper->expects(static::once())
+            ->method('map')
+            ->with('143')
+            ->willReturn('23');
+
         $swAPIMock = $this->getMockBuilder(ShopwareAPI::class)
             ->disableOriginalConstructor()
             ->setMethods([
@@ -72,6 +79,9 @@ class ArticleExporterTest extends TestCase
                 'tax' => 19.0,
                 'supplier' => 'Cottelli Collection',
                 'descriptionLong' => 'Haut/Weiß. 100% Polyamid.',
+                'categories' => [
+                    ['id' => '23']
+                ],
                 'configuratorSet' => [
                     'type' => 0,
                     'groups' => [
@@ -135,6 +145,7 @@ class ArticleExporterTest extends TestCase
         $exporter = $this->app->make(\App\SW\Export\ArticleExporter::class, [
             'shopwareAPI' => $swAPIMock,
             'priceCalculator' => $priceCalculatorMock,
+            'categoryMapper' => $categoryMapper,
         ]);
         $exporter->export($edcProduct);
 
@@ -173,6 +184,8 @@ class ArticleExporterTest extends TestCase
         $swArticle = new SWArticle(['sw_id' => 35]);
         $swArticle->edcProduct()->associate($edcProduct);
         $swArticle->save();
+
+        $categoryMapper = $this->createMock(CategoryMapper::class);
 
         $swAPIMock = $this->getMockBuilder(ShopwareAPI::class)
             ->disableOriginalConstructor()
@@ -215,6 +228,7 @@ class ArticleExporterTest extends TestCase
         $exporter = $this->app->make(\App\SW\Export\ArticleExporter::class, [
             'shopwareAPI' => $swAPIMock,
             'priceCalculator' => $priceCalculatorMock,
+            'categoryMapper' => $categoryMapper,
         ]);
         $exporter->export($edcProduct);
 
@@ -258,6 +272,12 @@ class ArticleExporterTest extends TestCase
         $swArticle->edcProduct()->associate($edcProduct);
         $swArticle->save();
 
+        $categoryMapper = $this->createMock(CategoryMapper::class);
+        $categoryMapper->expects(static::once())
+            ->method('map')
+            ->with('143')
+            ->willReturn('23');
+
         $swAPIMock = $this->getMockBuilder(ShopwareAPI::class)
             ->disableOriginalConstructor()
             ->setMethods([
@@ -279,6 +299,9 @@ class ArticleExporterTest extends TestCase
                 'tax' => 19.0,
                 'supplier' => 'Cottelli Collection',
                 'descriptionLong' => 'Haut/Weiß. 100% Polyamid.',
+                'categories' => [
+                    ['id' => '23']
+                ],
                 'configuratorSet' => [
                     'type' => 0,
                     'groups' => [
@@ -333,6 +356,7 @@ class ArticleExporterTest extends TestCase
         $exporter = $this->app->make(\App\SW\Export\ArticleExporter::class, [
             'shopwareAPI' => $swAPIMock,
             'priceCalculator' => $priceCalculatorMock,
+            'categoryMapper' => $categoryMapper,
         ]);
         $exporter->export($edcProduct);
     }
@@ -349,6 +373,12 @@ class ArticleExporterTest extends TestCase
         /** @var EDCProduct $edcProduct */
         $edcProduct = EDCProduct::query()->latest()->first();
         $edcProductImage = factory(EDCProductImage::class)->create(['product_id' => $edcProduct->id]);
+
+        $categoryMapper = $this->createMock(CategoryMapper::class);
+        $categoryMapper->expects(static::once())
+            ->method('map')
+            ->with('129')
+            ->willReturn(null);
 
         $swAPIMock = $this->getMockBuilder(ShopwareAPI::class)
             ->disableOriginalConstructor()
@@ -402,6 +432,7 @@ class ArticleExporterTest extends TestCase
         $exporter = $this->app->make(\App\SW\Export\ArticleExporter::class, [
             'shopwareAPI' => $swAPIMock,
             'priceCalculator' => $priceCalculatorMock,
+            'categoryMapper' => $categoryMapper,
         ]);
         $exporter->export($edcProduct);
 
@@ -442,6 +473,8 @@ class ArticleExporterTest extends TestCase
                 'createShopwareArticle',
             ])
             ->getMock();
+
+        $categoryMapper = $this->createMock(CategoryMapper::class);
 
         $swAPIMock->expects(static::once())
             ->method('createShopwareArticle')
@@ -499,6 +532,7 @@ class ArticleExporterTest extends TestCase
         $exporter = $this->app->make(\App\SW\Export\ArticleExporter::class, [
             'shopwareAPI' => $swAPIMock,
             'priceCalculator' => $priceCalculatorMock,
+            'categoryMapper' => $categoryMapper,
         ]);
         $exporter->export($edcProduct);
 
@@ -538,6 +572,8 @@ class ArticleExporterTest extends TestCase
         $productStockFeedPart = $this->createStockFeedPartFromFile(fixture_path('product-stocks-3.xml'));
         $edcProductVariant->currentData->feedPartStock()->associate($productStockFeedPart);
         $edcProductVariant->currentData->save();
+
+        $categoryMapper = $this->createMock(CategoryMapper::class);
 
         $swAPIMock = $this->getMockBuilder(ShopwareAPI::class)
             ->disableOriginalConstructor()
@@ -591,6 +627,7 @@ class ArticleExporterTest extends TestCase
         $exporter = $this->app->make(\App\SW\Export\ArticleExporter::class, [
             'shopwareAPI' => $swAPIMock,
             'priceCalculator' => $priceCalculatorMock,
+            'categoryMapper' => $categoryMapper,
         ]);
         $exporter->export($edcProduct);
 

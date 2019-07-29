@@ -45,7 +45,7 @@ class ProductCategoryExtractor
             foreach ($productCategories as $productCategory) {
                 [$mainCategory, $subCategory] = $productCategory;
 
-                $this->logger->info('CategoryExtractor', [
+                $this->logger->info('ProductCategoryExtractor', [
                     'edcProduct' => $edcProduct->asLoggingContext(),
                     'main' => $mainCategory,
                     'sub' => $subCategory,

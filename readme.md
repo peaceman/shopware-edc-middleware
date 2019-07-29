@@ -16,3 +16,6 @@
 
 ## order update endpoint for edc
 `/order-update?auth=$configuredAuthToken`
+
+## product category mapping
+default expected mapping csv file path: storage/app/cat-mapping.csv

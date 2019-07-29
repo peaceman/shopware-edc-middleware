@@ -16,6 +16,7 @@ use App\ResourceFile\StorageDirector;
 use App\SW\ShopwareAPI;
 use App\SWArticle;
 use Assert\Assert;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Psr\Log\LoggerInterface;
 
@@ -33,17 +34,22 @@ class ArticleExporter
     /** @var PriceCalculator */
     protected $priceCalculator;
 
+    /** @var CategoryMapper */
+    protected $categoryMapper;
+
     public function __construct(
         LoggerInterface $logger,
         ShopwareAPI $shopwareAPI,
         StorageDirector $storageDirector,
-        PriceCalculator $priceCalculator
+        PriceCalculator $priceCalculator,
+        CategoryMapper $categoryMapper
     )
     {
         $this->logger = $logger;
         $this->shopwareAPI = $shopwareAPI;
         $this->storageDirector = $storageDirector;
         $this->priceCalculator = $priceCalculator;
+        $this->categoryMapper = $categoryMapper;
     }
 
     public function export(EDCProduct $edcProduct): void
@@ -256,6 +262,15 @@ class ArticleExporter
             'descriptionLong' => $productXML->getDescription(),
         ];
 
+        // categories
+        $subCategoryIDs = $this->determineShopwareSubCategoryIDs($productXML);
+        if (!empty($subCategoryIDs)) {
+            $articleData['categories'] = array_map(function (string $id): array {
+                return ['id' => $id];
+            }, $subCategoryIDs);
+        }
+
+        // configurator sets
         $configuratorSetGroups = $this->generateConfiguratorSetFromVariants($variants);
         if (!empty($configuratorSetGroups)) {
             $articleData['configuratorSet'] = [
@@ -281,5 +296,23 @@ class ArticleExporter
         }
 
         return $articleData;
+    }
+
+    protected function determineShopwareSubCategoryIDs(ProductXML $productXML): array
+    {
+        $categories = $productXML->getCategories();
+        if (empty($categories)) return [];
+
+        return collect($categories)
+            ->map(function ($categories) {
+                return Arr::last($categories);
+            })
+            ->filter()
+            ->pluck('id')
+            ->map(function (string $subCategoryID) {
+                return $this->categoryMapper->map($subCategoryID);
+            })
+            ->filter()
+            ->all();
     }
 }
