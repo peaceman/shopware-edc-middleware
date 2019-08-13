@@ -65,6 +65,31 @@ class OrderUpdaterTest extends TestCase
         static::assertEquals(SWTransferStatus::COMPLETED, $swOrder->currentData->sw_transfer_status);
     }
 
+    public function testUpdateWithoutAttributes()
+    {
+        // prepare order
+        $swOrder = $this->createOrder();
+        $swOrder->currentData->update(['edc_order_number' => null]);
+
+        // prepare sw api mock
+        $swAPI = $this->createMock(ShopwareAPI::class);
+        $swAPI->expects(static::once())
+            ->method('updateOrder')
+            ->with($swOrder->sw_order_number, [
+                'orderStatusId' => config('shopware.status.order.inProcess'),
+                'trackingCode' => 'abc123',
+                'attribute' => [],
+            ]);
+
+        // update order
+        $orderUpdater = $this->createOrderUpdater(['shopwareAPI' => $swAPI]);
+        $orderUpdater->updateOrder($swOrder);
+
+        // assertions
+        $swOrder->refresh();
+        static::assertEquals(SWTransferStatus::COMPLETED, $swOrder->currentData->sw_transfer_status);
+    }
+
     public function testFailingUpdate()
     {
         // prepare order

@@ -34,7 +34,7 @@ class OrderUpdater
             'order' => $order->asLoggingContext(),
         ]);
 
-        $this->shopwareAPI->updateOrder($order->sw_order_number, array_merge(...array_filter([
+        $this->shopwareAPI->updateOrder($order->sw_order_number, array_merge([], ...array_filter([
             $this->genOrderState($order),
             $this->genTrackingCode($order),
             $this->genAttributes($order),
@@ -78,7 +78,7 @@ class OrderUpdater
     protected function genAttributes(SWOrder $order): array
     {
         return [
-            'attribute' => array_merge(...array_filter([
+            'attribute' => array_merge([], ...array_filter([
                 $this->genEDCOrderNumber($order),
                 $this->genEDCErrors($order),
             ]))
