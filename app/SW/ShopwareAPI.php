@@ -211,7 +211,7 @@ class ShopwareAPI
         $this->logger->info(__METHOD__, $loggingContext);
 
         try {
-            $this->httpClient->put("/api/orders{$orderNumber}", [
+            $this->httpClient->put("/api/orders/{$orderNumber}", [
                 'query' => ['useNumberAsId' => 1],
                 'json' => $data,
             ]);
