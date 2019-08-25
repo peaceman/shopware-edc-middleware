@@ -56,4 +56,9 @@ class VariantXML
     {
         return (string)$this->xml->ean;
     }
+
+    public function getStockEstimate(): int
+    {
+        return (int)$this->xml->stockestimate ?? 1;
+    }
 }

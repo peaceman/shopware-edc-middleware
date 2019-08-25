@@ -95,6 +95,7 @@ class ArticleExporterTest extends TestCase
                     'active' => true,
                     'number' => '02308550000',
                     'ean' => '4024144230853',
+                    'inStock' => 2,
                     'prices' => [[
                         'price' => 9.95,
                     ]],
@@ -107,6 +108,7 @@ class ArticleExporterTest extends TestCase
                         'active' => true,
                         'number' => '230863',
                         'ean' => '4024144230860',
+                        'inStock' => 10,
                         'prices' => [[
                             'price' => 9.95,
                         ]],
@@ -315,6 +317,7 @@ class ArticleExporterTest extends TestCase
                     'active' => true,
                     'number' => '02308550000',
                     'ean' => '4024144230853',
+                    'inStock' => 2,
                     'prices' => [[
                         'price' => 9.95,
                     ]],
@@ -327,6 +330,7 @@ class ArticleExporterTest extends TestCase
                         'active' => true,
                         'number' => '230863',
                         'ean' => '4024144230860',
+                        'inStock' => 10,
                         'prices' => [[
                             'price' => 9.95,
                         ]],
@@ -400,6 +404,7 @@ class ArticleExporterTest extends TestCase
                     'active' => true,
                     'number' => 'ae214',
                     'ean' => '848518017215',
+                    'inStock' => 50,
                     'prices' => [[
                         'price' => 62.95,
                     ]],
@@ -497,6 +502,7 @@ class ArticleExporterTest extends TestCase
                     'active' => true,
                     'number' => 'ae214',
                     'ean' => '848518017215',
+                    'inStock' => 50,
                     'prices' => [[
                         'price' => 62.95,
                     ]],
@@ -595,6 +601,7 @@ class ArticleExporterTest extends TestCase
                     'active' => false,
                     'number' => 'ae214',
                     'ean' => '848518017215',
+                    'inStock' => 8,
                     'prices' => [[
                         'price' => 62.95,
                     ]],

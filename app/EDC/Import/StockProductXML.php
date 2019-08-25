@@ -37,4 +37,9 @@ class StockProductXML
     {
         return (string)$this->xml->stock;
     }
+
+    public function getQuantity(): int
+    {
+        return (int)$this->xml->qty;
+    }
 }

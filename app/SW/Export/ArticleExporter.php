@@ -7,6 +7,7 @@ namespace App\SW\Export;
 
 use App\Domain\ShopwareArticleInfo;
 use App\EDC\Import\ProductXML;
+use App\EDC\Import\StockProductXML;
 use App\EDC\Import\StockXMLFactory;
 use App\EDC\Import\VariantXML;
 use App\EDCProduct;
@@ -151,12 +152,13 @@ class ArticleExporter
         /** @var EDCProductVariant $epv */
         $epv = $edcProduct->variants()->where('edc_id', $variantXML->getEDCID())->firstOrFail();
 
-        $isActive = $this->determineIsActiveFromStock($epv, $variantXML);
+        $stockProduct = $this->getStockProduct($epv);
 
         $variantData = [
-            'active' => $isActive,
+            'active' => $stockProduct ? $stockProduct->isInStock() : $variantXML->isInStock(),
             'number' => $variantXML->getSubArtNr(),
             'ean' => $variantXML->getEAN(),
+            'inStock' => $stockProduct ? $stockProduct->getQuantity() : $variantXML->getStockEstimate(),
             'prices' => [[
                 'price' => $this->calculatePrice($edcProduct, $productXML),
             ]],
@@ -169,6 +171,15 @@ class ArticleExporter
         }
 
         return $variantData;
+    }
+
+    protected function getStockProduct(EDCProductVariant $epv): ?StockProductXML
+    {
+        if (!$feedPartStock = $epv->currentData->feedPartStock) return null;
+
+        $stockXML = $this->stockXMLFactory->create($feedPartStock);
+
+        return $stockXML->getStockProductWithVariantEDCID($epv->edc_id);
     }
 
     protected function determineIsActiveFromStock(EDCProductVariant $epv, VariantXML $variantXML): bool
