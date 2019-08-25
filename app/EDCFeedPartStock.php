@@ -9,6 +9,7 @@ use App\ResourceFile\ResourceFile;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class EDCFeedPartStock
@@ -24,11 +25,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property-read ResourceFile $file
  * @property-read EDCFeed $fullFeed
+ * @property-read EDCProductVariantData $variantData
  */
 class EDCFeedPartStock extends Model
 {
     protected $table = 'edc_feed_part_stocks';
     protected static $unguarded = true;
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function (self $feedPartStock) {
+            if ($feedPartStock->file) $feedPartStock->file->delete();
+        });
+    }
 
     public function file(): BelongsTo
     {
@@ -43,5 +54,10 @@ class EDCFeedPartStock extends Model
     public function asLoggingContext(): array
     {
         return $this->only(['id', 'file_id', 'full_feed_id']);
+    }
+
+    public function variantData(): HasMany
+    {
+        return $this->hasMany(EDCProductVariantData::class, 'feed_part_stock_id', 'id');
     }
 }

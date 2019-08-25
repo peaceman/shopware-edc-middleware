@@ -10,6 +10,7 @@ use App\EDC\Export\OrderXMLGenerator;
 use App\EDC\Import\Events\FeedFetched;
 use App\EDC\Import\HouseKeeping\Providers\OldProductVariantData;
 use App\EDC\Import\Jobs\DeleteOldProductVariantData;
+use App\EDC\Import\Jobs\DeleteUnusedFeedPartStock;
 use App\EDC\Import\Jobs\FetchFeed;
 use App\EDC\Import\Jobs\ParseDiscountFeed;
 use App\EDC\Import\Jobs\ParseProductFeed;
@@ -106,7 +107,8 @@ class EDCServiceProvider extends ServiceProvider
             $schedule->job(new FetchFeed(EDCFeed::TYPE_DISCOUNTS))->dailyAt('04:23');
             $schedule->job(new FetchFeed(EDCFeed::TYPE_PRODUCTS))->cron('23 5 */3 * *');
             $schedule->job(new FetchFeed(EDCFeed::TYPE_PRODUCT_STOCKS))->hourlyAt(5);
-            $schedule->job(new DeleteOldProductVariantData())->daily();
+            $schedule->job(new DeleteOldProductVariantData())->everyFiveMinutes();
+            $schedule->job(new DeleteUnusedFeedPartStock())->everyFiveMinutes();
 
             $schedule->command(ExportOrders::class)->everyMinute();
         });
