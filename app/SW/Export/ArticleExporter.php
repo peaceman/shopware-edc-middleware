@@ -160,6 +160,7 @@ class ArticleExporter
             'suppliernumber' => $variantXML->getSubArtNr(),
             'ean' => $variantXML->getEAN(),
             'shippingTime' => SWArticle::DEFAULTS_SHIPPING_TIME,
+            'lastStock' => true,
             'inStock' => $stockProduct ? $stockProduct->getQuantity() : $variantXML->getStockEstimate(),
             'prices' => [[
                 'price' => $this->calculatePrice($edcProduct, $productXML),

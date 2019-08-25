@@ -98,6 +98,7 @@ class ArticleExporterTest extends TestCase
                     'suppliernumber' => '02308550000',
                     'ean' => '4024144230853',
                     'shippingTime' => SWArticle::DEFAULTS_SHIPPING_TIME,
+                    'lastStock' => true,
                     'inStock' => 2,
                     'prices' => [[
                         'price' => 9.95,
@@ -113,6 +114,7 @@ class ArticleExporterTest extends TestCase
                         'suppliernumber' => '230863',
                         'ean' => '4024144230860',
                         'shippingTime' => SWArticle::DEFAULTS_SHIPPING_TIME,
+                        'lastStock' => true,
                         'inStock' => 10,
                         'prices' => [[
                             'price' => 9.95,
@@ -325,6 +327,7 @@ class ArticleExporterTest extends TestCase
                     'suppliernumber' => '02308550000',
                     'ean' => '4024144230853',
                     'shippingTime' => SWArticle::DEFAULTS_SHIPPING_TIME,
+                    'lastStock' => true,
                     'inStock' => 2,
                     'prices' => [[
                         'price' => 9.95,
@@ -340,6 +343,7 @@ class ArticleExporterTest extends TestCase
                         'suppliernumber' => '230863',
                         'ean' => '4024144230860',
                         'shippingTime' => SWArticle::DEFAULTS_SHIPPING_TIME,
+                        'lastStock' => true,
                         'inStock' => 10,
                         'prices' => [[
                             'price' => 9.95,
@@ -417,6 +421,7 @@ class ArticleExporterTest extends TestCase
                     'suppliernumber' => 'ae214',
                     'ean' => '848518017215',
                     'shippingTime' => SWArticle::DEFAULTS_SHIPPING_TIME,
+                    'lastStock' => true,
                     'inStock' => 50,
                     'prices' => [[
                         'price' => 62.95,
@@ -518,6 +523,7 @@ class ArticleExporterTest extends TestCase
                     'suppliernumber' => 'ae214',
                     'ean' => '848518017215',
                     'shippingTime' => SWArticle::DEFAULTS_SHIPPING_TIME,
+                    'lastStock' => true,
                     'inStock' => 50,
                     'prices' => [[
                         'price' => 62.95,
@@ -620,6 +626,7 @@ class ArticleExporterTest extends TestCase
                     'suppliernumber' => 'ae214',
                     'ean' => '848518017215',
                     'shippingTime' => SWArticle::DEFAULTS_SHIPPING_TIME,
+                    'lastStock' => true,
                     'inStock' => 8,
                     'prices' => [[
                         'price' => 62.95,
