@@ -79,6 +79,7 @@ class ArticleExporterTest extends TestCase
                 'tax' => 19.0,
                 'supplier' => 'Cottelli Collection',
                 'descriptionLong' => 'Haut/Weiß. 100% Polyamid.',
+                'notification' => true,
                 'categories' => [
                     ['id' => '23']
                 ],
@@ -301,6 +302,7 @@ class ArticleExporterTest extends TestCase
                 'tax' => 19.0,
                 'supplier' => 'Cottelli Collection',
                 'descriptionLong' => 'Haut/Weiß. 100% Polyamid.',
+                'notification' => true,
                 'categories' => [
                     ['id' => '23']
                 ],
@@ -400,6 +402,7 @@ class ArticleExporterTest extends TestCase
                 'tax' => 19.0,
                 'supplier' => 'Raging Cock Stars',
                 'descriptionLong' => 'Dieser dicke, lange Dildo ist mit besonders realistischen Details versehen und an einem sehr starken Saugnapf befestigt. Dadurch können Sie den Dildo auf jeder gewünschten Oberfläche befestigen und so Vergnügen ganz ohne Hände genießen! Die pinkfarbene Spitze des Dildos ist von Hand gefärbt. Der Dildo ist am Schaft mit einer stimulierenden Textur versehen und hat lebensechte Hoden.',
+                'notification' => true,
                 'mainDetail' => [
                     'active' => true,
                     'number' => 'ae214',
@@ -490,6 +493,7 @@ class ArticleExporterTest extends TestCase
                 'tax' => 19.0,
                 'supplier' => 'Raging Cock Stars',
                 'descriptionLong' => 'Dieser dicke, lange Dildo ist mit besonders realistischen Details versehen und an einem sehr starken Saugnapf befestigt. Dadurch können Sie den Dildo auf jeder gewünschten Oberfläche befestigen und so Vergnügen ganz ohne Hände genießen! Die pinkfarbene Spitze des Dildos ist von Hand gefärbt. Der Dildo ist am Schaft mit einer stimulierenden Textur versehen und hat lebensechte Hoden.',
+                'notification' => true,
                 'configuratorSet' => [
                     'type' => 0,
                     'groups' => [
@@ -597,6 +601,7 @@ class ArticleExporterTest extends TestCase
                 'tax' => 19.0,
                 'supplier' => 'Raging Cock Stars',
                 'descriptionLong' => 'Dieser dicke, lange Dildo ist mit besonders realistischen Details versehen und an einem sehr starken Saugnapf befestigt. Dadurch können Sie den Dildo auf jeder gewünschten Oberfläche befestigen und so Vergnügen ganz ohne Hände genießen! Die pinkfarbene Spitze des Dildos ist von Hand gefärbt. Der Dildo ist am Schaft mit einer stimulierenden Textur versehen und hat lebensechte Hoden.',
+                'notification' => true,
                 'mainDetail' => [
                     'active' => false,
                     'number' => 'ae214',

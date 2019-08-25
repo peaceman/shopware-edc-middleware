@@ -275,6 +275,7 @@ class ArticleExporter
             'tax' => $productXML->getVATDE(),
             'supplier' => $edcProduct->brand->brand_name,
             'descriptionLong' => $productXML->getDescription(),
+            'notification' => true,
         ];
 
         // categories
