@@ -10,7 +10,14 @@ use App\EDCProduct;
 
 class PriceCalculator
 {
-    public function calcPrice(EDCProduct $edcProduct, ProductXML $productXML)
+    public function calcPrice(EDCProduct $edcProduct, ProductXML $productXML): float
+    {
+        $nonRoundedPrice = $this->calcNonRoundedPrice($edcProduct, $productXML);
+
+        return ceil($nonRoundedPrice);
+    }
+
+    protected function calcNonRoundedPrice(EDCProduct $edcProduct, ProductXML $productXML): float
     {
         $b2cPrice = $productXML->getB2CPrice();
 

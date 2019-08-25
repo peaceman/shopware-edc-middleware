@@ -41,7 +41,7 @@ class PriceCalculatorTest extends TestCase
                     return $ep;
                 }),
                 'product-1.xml',
-                9.95 * .5,
+                ceil(9.95 * .5),
             ],
             'with active brand discount 0' => [
                 tap(new EDCProduct(), function (EDCProduct $ep) {
@@ -53,7 +53,7 @@ class PriceCalculatorTest extends TestCase
                     return $ep;
                 }),
                 'product-1.xml',
-                9.95,
+                ceil(9.95),
             ],
             'without brand discount' => [
                 tap(new EDCProduct(), function (EDCProduct $ep) {
@@ -65,7 +65,7 @@ class PriceCalculatorTest extends TestCase
                     return $ep;
                 }),
                 'product-1.xml',
-                9.95,
+                ceil(9.95),
             ],
             'with inactive brand discount' => [
                 tap(new EDCProduct(), function (EDCProduct $ep) {
@@ -77,7 +77,7 @@ class PriceCalculatorTest extends TestCase
                     return $ep;
                 }),
                 'product-1-without-discount.xml',
-                9.95,
+                ceil(9.95),
             ],
         ];
     }
