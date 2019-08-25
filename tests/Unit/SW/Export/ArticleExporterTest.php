@@ -95,6 +95,7 @@ class ArticleExporterTest extends TestCase
                 'mainDetail' => [
                     'active' => true,
                     'number' => '02308550000',
+                    'suppliernumber' => '02308550000',
                     'ean' => '4024144230853',
                     'inStock' => 2,
                     'prices' => [[
@@ -108,6 +109,7 @@ class ArticleExporterTest extends TestCase
                     [
                         'active' => true,
                         'number' => '230863',
+                        'suppliernumber' => '230863',
                         'ean' => '4024144230860',
                         'inStock' => 10,
                         'prices' => [[
@@ -318,6 +320,7 @@ class ArticleExporterTest extends TestCase
                 'mainDetail' => [
                     'active' => true,
                     'number' => '02308550000',
+                    'suppliernumber' => '02308550000',
                     'ean' => '4024144230853',
                     'inStock' => 2,
                     'prices' => [[
@@ -331,6 +334,7 @@ class ArticleExporterTest extends TestCase
                     [
                         'active' => true,
                         'number' => '230863',
+                        'suppliernumber' => '230863',
                         'ean' => '4024144230860',
                         'inStock' => 10,
                         'prices' => [[
@@ -406,6 +410,7 @@ class ArticleExporterTest extends TestCase
                 'mainDetail' => [
                     'active' => true,
                     'number' => 'ae214',
+                    'suppliernumber' => 'ae214',
                     'ean' => '848518017215',
                     'inStock' => 50,
                     'prices' => [[
@@ -505,6 +510,7 @@ class ArticleExporterTest extends TestCase
                 'mainDetail' => [
                     'active' => true,
                     'number' => 'ae214',
+                    'suppliernumber' => 'ae214',
                     'ean' => '848518017215',
                     'inStock' => 50,
                     'prices' => [[
@@ -605,6 +611,7 @@ class ArticleExporterTest extends TestCase
                 'mainDetail' => [
                     'active' => false,
                     'number' => 'ae214',
+                    'suppliernumber' => 'ae214',
                     'ean' => '848518017215',
                     'inStock' => 8,
                     'prices' => [[

@@ -157,6 +157,7 @@ class ArticleExporter
         $variantData = [
             'active' => $stockProduct ? $stockProduct->isInStock() : $variantXML->isInStock(),
             'number' => $variantXML->getSubArtNr(),
+            'suppliernumber' => $variantXML->getSubArtNr(),
             'ean' => $variantXML->getEAN(),
             'inStock' => $stockProduct ? $stockProduct->getQuantity() : $variantXML->getStockEstimate(),
             'prices' => [[
