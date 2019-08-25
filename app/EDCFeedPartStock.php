@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $file_id
  * @property int $full_feed_id
+ * @property string $content
+ * @property-read string $content_checksum
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *

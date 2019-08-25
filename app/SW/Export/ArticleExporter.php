@@ -7,7 +7,7 @@ namespace App\SW\Export;
 
 use App\Domain\ShopwareArticleInfo;
 use App\EDC\Import\ProductXML;
-use App\EDC\Import\StockXML;
+use App\EDC\Import\StockXMLFactory;
 use App\EDC\Import\VariantXML;
 use App\EDCProduct;
 use App\EDCProductImage;
@@ -37,12 +37,16 @@ class ArticleExporter
     /** @var CategoryMapper */
     protected $categoryMapper;
 
+    /** @var StockXMLFactory */
+    protected $stockXMLFactory;
+
     public function __construct(
         LoggerInterface $logger,
         ShopwareAPI $shopwareAPI,
         StorageDirector $storageDirector,
         PriceCalculator $priceCalculator,
-        CategoryMapper $categoryMapper
+        CategoryMapper $categoryMapper,
+        StockXMLFactory $stockXMLFactory
     )
     {
         $this->logger = $logger;
@@ -50,6 +54,7 @@ class ArticleExporter
         $this->storageDirector = $storageDirector;
         $this->priceCalculator = $priceCalculator;
         $this->categoryMapper = $categoryMapper;
+        $this->stockXMLFactory = $stockXMLFactory;
     }
 
     public function export(EDCProduct $edcProduct): void
@@ -168,9 +173,7 @@ class ArticleExporter
     protected function determineIsActiveFromStock(EDCProductVariant $epv, VariantXML $variantXML): bool
     {
         if ($feedPartStock = $epv->currentData->feedPartStock) {
-            $stockXML = StockXML::fromFilePath($this->storageDirector->getLocalPath(
-                $epv->currentData->feedPartStock->file
-            ));
+            $stockXML = $this->stockXMLFactory->create($feedPartStock);
 
             $stockProductXML = $stockXML->getStockProductWithVariantEDCID($epv->edc_id);
             return $stockProductXML->isInStock();

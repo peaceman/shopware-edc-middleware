@@ -20,6 +20,14 @@ class StockXML
         return $o;
     }
 
+    public static function fromString(string $xml): self
+    {
+        $o = new static;
+        $o->xml = simplexml_load_string($xml);
+
+        return $o;
+    }
+
     /**
      * @return iterable|StockProductXML[]
      */

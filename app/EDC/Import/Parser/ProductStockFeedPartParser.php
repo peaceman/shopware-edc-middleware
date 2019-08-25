@@ -8,13 +8,33 @@ namespace App\EDC\Import\Parser;
 use App\EDC\Import\Events\ProductTouched;
 use App\EDC\Import\StockProductXML;
 use App\EDC\Import\StockXML;
+use App\EDC\Import\StockXMLFactory;
 use App\EDCFeedPartStock;
 use App\EDCProduct;
 use App\EDCProductVariant;
+use App\ResourceFile\StorageDirector;
+use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
+use Illuminate\Database\ConnectionInterface;
+use Psr\Log\LoggerInterface;
 
 class ProductStockFeedPartParser extends FeedParser
 {
     protected $touchedProducts = [];
+
+    /** @var StockXMLFactory */
+    protected $stockXMLFactory;
+
+    public function __construct(
+        LoggerInterface $logger,
+        ConnectionInterface $dbConnection,
+        EventDispatcher $eventDispatcher,
+        StorageDirector $storageDirector,
+        StockXMLFactory $stockXMLFactory
+    ) {
+        parent::__construct($logger, $dbConnection, $eventDispatcher, $storageDirector);
+
+        $this->stockXMLFactory = $stockXMLFactory;
+    }
 
     public function parse(EDCFeedPartStock $feed): void
     {
@@ -32,9 +52,7 @@ class ProductStockFeedPartParser extends FeedParser
 
     protected function createStockXML(EDCFeedPartStock $feed): StockXML
     {
-        $filePath = $this->storageDirector->getLocalPath($feed->file);
-
-        return StockXML::fromFilePath($filePath);
+        return $this->stockXMLFactory->create($feed);
     }
 
     protected function updateVariantWithStockProduct(
@@ -89,6 +107,6 @@ class ProductStockFeedPartParser extends FeedParser
     {
         $feedPartStock = $variant->currentData->feedPartStock;
 
-        return $feedPartStock && $feedPartStock->file->checksum === $feed->file->checksum;
+        return $feedPartStock && $feedPartStock->content_checksum === $feed->content_checksum;
     }
 }

@@ -52,7 +52,9 @@ class ProductStockFeedParserTest extends TestCase
             })
             ->all();
 
-        $feedPartsChecksums = $stockFeedParts->pluck('file.checksum')->all();
+        $feedPartsChecksums = $stockFeedParts->map(function (EDCFeedPartStock $feedPart) {
+            return md5($feedPart->content);
+        })->all();
 
         static::assertEqualsCanonicalizing($feedPartFixtureChecksums, $feedPartsChecksums);
 
@@ -95,6 +97,15 @@ class ProductStockFeedParserTest extends TestCase
         // second pass
         Queue::fake();
 
+        $parser->parse($feed);
+
+        static::assertEquals($feedPartCount, $feed->stockFeedParts()->count());
+        Queue::assertNotPushed(ParseProductStockFeedPart::class);
+
+        // third pass with fresh parser
+        Queue::fake();
+
+        $parser = $this->getProductStockFeedParser();
         $parser->parse($feed);
 
         static::assertEquals($feedPartCount, $feed->stockFeedParts()->count());

@@ -126,7 +126,7 @@ class ProductStockFeedParser extends FeedParser
         $feedPartXML = $this->createFeedPartXML($domNodes);
         if ($this->feedPartExistsAlready($feed, md5($feedPartXML)))
             return false;
-        
+
         $feedPart = $this->createFeedPart($feed, $feedPartXML);
 
         $job = new ParseProductStockFeedPart($feedPart);
@@ -157,16 +157,14 @@ class ProductStockFeedParser extends FeedParser
 
     protected function determineFeedPartChecksums(EDCFeed $feed): Collection
     {
-        return $feed->stockFeedParts()->with('file')->get()->pluck('file.checksum');
+        return $feed->stockFeedParts()->get()->pluck('content_checksum');
     }
 
     protected function createFeedPart(EDCFeed $feed, string $feedPartXML): EDCFeedPartStock
     {
-        $rf = $this->storageDirector->createFileFromString('product-stock-feed-part.xml', $feedPartXML);
-
         $feedPart = new EDCFeedPartStock();
         $feedPart->fullFeed()->associate($feed);
-        $feedPart->file()->associate($rf);
+        $feedPart->content = $feedPartXML;
         $feedPart->save();
 
         return $feedPart;

@@ -665,13 +665,11 @@ class ArticleExporterTest extends TestCase
 
     protected function createStockFeedPartFromFile(string $filePath): EDCFeedPartStock
     {
-        $rf = $this->storageDirector->createFileFromPath('product-stock-part.xml', $filePath);
-
         $fullFeed = factory(EDCFeed::class)->create();
 
         $feed = new EDCFeedPartStock();
         $feed->fullFeed()->associate($fullFeed);
-        $feed->file()->associate($rf);
+        $feed->content = file_get_contents($filePath);
         $feed->save();
 
         return $feed;
