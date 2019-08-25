@@ -335,6 +335,7 @@ class ArticleExporterTest extends TestCase
                         ],
                     ]
                 ],
+                '__options_images' => ['replace' => true],
                 'images' => [
                     ['link' => route('product-images', [$edcProductImage->identifier])],
                 ],

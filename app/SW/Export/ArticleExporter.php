@@ -100,6 +100,7 @@ class ArticleExporter
 
         $productXML = ProductXML::fromFilePath($this->storageDirector->getLocalPath($sourceFeed->file));
         $articleData = $this->generateArticleData($edcProduct, $productXML);
+        $articleData['__options_images'] = ['replace' => true];
 
         $this->shopwareAPI->updateShopwareArticle($swArticle->sw_id, $articleData);
 
