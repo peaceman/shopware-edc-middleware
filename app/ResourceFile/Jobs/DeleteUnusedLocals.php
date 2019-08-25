@@ -11,6 +11,8 @@ use App\ResourceFile\HouseKeeping\Providers\UnusedLocalResourceFileInstances;
 
 class DeleteUnusedLocals extends BaseJob
 {
+    public $queue = 'long-running';
+
     public function handle(FileInstanceDeleter $fileInstanceDeleter, UnusedLocalResourceFileInstances $rfiProvider)
     {
         $fileInstanceDeleter($rfiProvider);

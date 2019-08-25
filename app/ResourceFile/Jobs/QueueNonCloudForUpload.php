@@ -11,6 +11,8 @@ use App\ResourceFile\HouseKeeping\Providers\NonCloudResourceFiles;
 
 class QueueNonCloudForUpload extends BaseJob
 {
+    public $queue = 'long-running';
+
     public function handle(FileUploadQueuer $uploadQueuer, NonCloudResourceFiles $rfs): void
     {
         $uploadQueuer($rfs);

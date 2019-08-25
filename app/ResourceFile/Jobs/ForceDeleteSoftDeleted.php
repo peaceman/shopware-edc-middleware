@@ -11,6 +11,8 @@ use App\ResourceFile\HouseKeeping\Providers\SoftDeletedResourceFiles;
 
 class ForceDeleteSoftDeleted extends BaseJob
 {
+    public $queue = 'long-running';
+
     public function handle(FileForceDeleter $forceDeleter, SoftDeletedResourceFiles $rfs): void
     {
         $forceDeleter($rfs);

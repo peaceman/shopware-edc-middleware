@@ -96,7 +96,7 @@ class ResourceFileServiceProvider extends ServiceProvider
 
             $schedule->job(DeleteUnusedLocals::class)->daily();
             $schedule->job(ForceDeleteSoftDeleted::class)->daily();
-            $schedule->job(QueueNonCloudForUpload::class)->everyThirtyMinutes();
+            $schedule->job(QueueNonCloudForUpload::class)->everyFiveMinutes();
         });
     }
 
