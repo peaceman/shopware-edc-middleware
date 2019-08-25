@@ -25,6 +25,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class SWArticle extends Model
 {
+    public const DEFAULTS_SHIPPING_TIME = '1-3';
+
     protected $table = 'sw_articles';
     protected static $unguarded = true;
 
